@@ -1,44 +1,178 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Katalog Setan - KetemuSetan.id</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ketemusetan.id - Panggilan Tak Terduga</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Dasar */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a2e; /* Latar belakang gelap, elegan */
+            color: #e4e4f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow: hidden; /* Menyembunyikan elemen yang melayang di luar */
+        }
+
+        /* Container utama */
+        .container {
+            background-color: rgba(27, 27, 47, 0.9);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 90%;
+            opacity: 0; /* Awalnya tersembunyi untuk transisi masuk */
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        /* Judul Utama */
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            color: #ffcc00; /* Warna kontras, seperti cahaya */
+            margin-bottom: 0px;
+            letter-spacing: 2px;
+            transition: color 0.5s ease;
+        }
+
+        h1:hover {
+            color: #ffeeaa; /* Efek hover halus */
+        }
+
+        /* Tagline Melayang */
+        .tagline {
+            font-size: 1.2em;
+            color: #a0a0c0;
+            margin-top: 5px;
+            margin-bottom: 30px;
+            /* Animasi Melayang */
+            animation: floatText 4s ease-in-out infinite;
+            display: block; /* Penting untuk animasi */
+        }
+
+        /* Transisi Smooth untuk Tombol */
+        .cta-button {
+            background-color: #e94560; /* Warna tombol yang menarik */
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease; /* Transisi untuk hover dan focus */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        }
+
+        .cta-button:hover {
+            background-color: #d83a54;
+            transform: translateY(-3px); /* Efek mengangkat */
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
+        /* Deskripsi */
+        .description {
+            margin: 20px 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+            transition: color 0.5s ease;
+        }
+
+        /* Hasil Panggilan */
+        #setan-result {
+            margin-top: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ff6f61; /* Warna untuk hasil */
+            min-height: 1.5em; /* Memastikan ruang tetap */
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- KEYFRAMES untuk Animasi Smooth --- */
+
+        /* Animasi masuk halaman */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animasi Teks Melayang */
+        @keyframes floatText {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-5px); /* Bergerak sedikit ke atas */
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Katalog Setan</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-    </nav>
-  </header>
 
-  <section class="catalog">
-    <div class="card">
-      <img src="https://www.google.com/imgres?q=pocong%20lucu&imgurl=https%3A%2F%2Fi.pinimg.com%2F474x%2F02%2F83%2Fe7%2F0283e7df59239a1959b110d1ddf29be6.jpg&imgrefurl=https%3A%2F%2Fid.pinterest.com%2Fpin%2F182747697372278144%2F&docid=Kxs0zwZQ4Tj5vM&tbnid=cT1MptQZlL18PM&vet=12ahUKEwiwr-WU-eeQAxXcSmwGHfNTD6YQM3oECBkQAA..i&w=298&h=298&hcb=2&ved=2ahUKEwiwr-WU-eeQAxXcSmwGHfNTD6YQM3oECBkQAA" alt="Pocong">
-      <h3>Pocong</h3>
-      <p>Hantu paling populer di Indonesia, terkenal dengan lompatannya yang elegan.</p>
-      <p><strong>Harga sewa:</strong> Rp50.000/jam</p>
-      <a href="https://wa.me/6281234567890?text=Halo%20saya%20mau%20sewa%20Pocong" class="btn">Sewa via WhatsApp</a>
+    <div class="container">
+        <h1>ketemusetan.id</h1>
+        <span class="tagline">"Meelayang di Antara Dimensi yang Berbeda"</span>
+
+        <p class="description">
+            Selamat datang di gerbang tak terduga. Kami menyediakan deskripsi singkat dan jalur cepat menuju penampakan, baik yang nyata maupun sekadar ilusi. Siapkan mental Anda.
+        </p>
+
+        <button class="cta-button" onclick="panggilSetan()">
+            PANGGIL SETAN ACAK 👻
+        </button>
+
+        <p id="setan-result"></p>
     </div>
 
-    <div class="card">
-      <img src="https://i.ibb.co/4VyzBTF/kuntilanak.jpg" alt="Kuntilanak">
-      <h3>Kuntilanak</h3>
-      <p>Spesialis teriakan malam hari, cocok untuk acara horror show.</p>
-      <p><strong>Harga sewa:</strong> Rp75.000/jam</p>
-      <a href="https://wa.me/6281234567890?text=Halo%20saya%20mau%20sewa%20Kuntilanak" class="btn">Sewa via WhatsApp</a>
-    </div>
+    <script>
+        const setanList = [
+            "Pocong",
+            "Kuntilanak",
+            "Genderuwo",
+            "Wewe Gombel",
+            "Sundel Bolong",
+            "Leak Bali",
+            "Tuyul",
+            "Jin",
+            "Begu Ganjang"
+        ];
 
-    <div class="card">
-      <img src="https://i.ibb.co/0J5Xy9m/genderuwo.jpg" alt="Genderuwo">
-      <h3>Genderuwo</h3>
-      <p>Besar, berbulu, dan penuh karisma. Favorit untuk pesta Halloween.</p>
-      <p><strong>Harga sewa:</strong> Rp100.000/jam</p>
-      <a href="https://wa.me/6281234567890?text=Halo%20saya%20mau%20sewa%20Genderuwo" class="btn">Sewa via WhatsApp</a>
-    </div>
-  </section>
+        function panggilSetan() {
+            const resultElement = document.getElementById('setan-result');
+            
+            // Transisi keluar (membuat hasil sebelumnya pudar)
+            resultElement.style.opacity = '0'; 
+
+            // Setelah transisi pudar selesai, ganti teks
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * setanList.length);
+                const setan = setanList[randomIndex];
+                
+                resultElement.textContent = `Anda berhasil memanggil: ${setan}!`;
+                
+                // Transisi masuk (membuat hasil baru muncul)
+                resultElement.style.opacity = '1'; 
+            }, 300); // Waktu ini harus sesuai dengan transition CSS
+        }
+    </script>
 </body>
 </html>
