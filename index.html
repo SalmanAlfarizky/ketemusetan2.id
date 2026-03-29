@@ -3,693 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OX-Lab | Premium Media Production</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Spellscript: Tactical Battle</title>
     <style>
-        body { font-family: 'Poppins', sans-serif; scroll-behavior: smooth; background-color: black; color: white; }
-        
-        .gradient-bg {
-            background: linear-gradient(180deg, #D6A6C0 0%, #4A72C2 50%, #2E3A8C 100%);
+        :root {
+            --primary: #f1c40f;
+            --bg: #0f0f0f;
+            --card-bg: #1a1a1b;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --text: #d1c1a1;
         }
 
-        .mesh-gradient {
-            position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0;
-            overflow: hidden; pointer-events: none; opacity: 0.4;
-        }
-
-        .mesh-ball {
-            position: absolute; filter: blur(100px); border-radius: 50%;
-            animation: float-mesh 20s infinite alternate;
-        }
-
-        @keyframes float-mesh {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(10%, 15%) scale(1.2); }
-        }
-
-        .menu-card {
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            backdrop-filter: blur(8px);
-        }
-        .menu-card:hover {
-            transform: translateY(-15px);
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.23, 1, 0.32, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        .list-star::before {
-            content: "✦"; color: #fbbf24; margin-right: 12px;
-            text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
-        }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .timeline-line {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #3b82f6, #a78bfa, transparent);
-            position: relative;
-        }
-        .timeline-dot {
-            width: 12px;
-            height: 12px;
-            background-color: #3b82f6;
-            border-radius: 50%;
-            position: absolute;
-            top: -5px;
-            box-shadow: 0 0 15px #3b82f6;
-        }
-
-        .lecturer-img-container {
-            background: #e5e7eb; border-radius: 2rem 2rem 0 0;
-            overflow: hidden; aspect-ratio: 4/5; position: relative;
-        }
-        .lecturer-name-tag {
-            background: #2E3A8C; color: white; padding: 0.75rem 0.5rem;
-            text-align: center; font-weight: 500; font-size: 0.8rem;
-            border-radius: 0 0 1rem 1rem; min-height: 4.5rem;
-            display: flex; align-items: center; justify-content: center; line-height: 1.3;
-        }
-
-        .project-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 2.5rem;
-            transition: 0.4s;
-        }
-        .project-card:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
-
-        .contact-btn {
-            transition: 0.3s;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .contact-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #3b82f6;
-            transform: translateY(-5px);
-        }
-
-        /* Game UI Styling */
-        .game-screen {
-            background: #000;
-            border: 4px solid #333;
-            border-radius: 1rem;
-            position: relative;
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
             overflow: hidden;
-            width: 100%;
-            max-width: 800px;
-            aspect-ratio: 16/9;
-            box-shadow: 0 0 40px rgba(59, 130, 246, 0.2);
         }
-        .scanline {
-            width: 100%; height: 2px; background: rgba(255,255,255,0.05);
-            position: absolute; pointer-events: none; z-index: 10;
-            animation: scanline 6s linear infinite;
+
+        /* Animasi Masuk */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes scanline { 0% { top: 0% } 100% { top: 100% } }
+
+        #game-container {
+            background: var(--card-bg);
+            padding: 40px;
+            border: 1px solid #333;
+            border-radius: 20px;
+            width: 550px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--primary);
+            letter-spacing: 8px;
+            text-shadow: 0 0 15px rgba(241, 196, 15, 0.3);
+            margin-bottom: 30px;
+        }
+
+        /* Input & Button Styling */
+        input {
+            width: 85%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #444;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);
+            outline: none;
+        }
+
+        button {
+            padding: 12px 30px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: var(--primary);
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        /* Battle View */
+        .battle-view {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0,0,0,0.4);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid #222;
+        }
+
+        .hp-container { width: 150px; }
+        .hp-bar { 
+            height: 10px; 
+            background: #222; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            margin: 10px 0;
+            border: 1px solid #333;
+        }
+        .hp-fill { 
+            height: 100%; 
+            width: 100%; 
+            transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
+        }
+
+        /* Action Zone */
+        .action-zone {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .spell-box {
+            background: #222;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            transition: 0.3s;
+        }
+
+        .spell-box:focus-within {
+            border-color: #555;
+            background: #282828;
+        }
+
+        .word-target {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+            min-height: 24px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .log {
+            font-size: 14px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-style: italic;
+        }
+
+        /* Shake Effect */
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .hit { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
 
     </style>
 </head>
 <body>
 
-    <!-- HALAMAN 1: HERO -->
-    <section id="beranda" class="gradient-bg relative min-h-screen flex flex-col justify-between overflow-hidden">
-        <div class="pt-8 px-6 md:px-10 flex justify-between items-center z-20">
-            <div class="h-14 bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl p-2 px-4 flex gap-3">
-                <img src="image/logo-ui.png" class="h-full object-contain">
-                <div class="w-px h-2/3 bg-white/30 self-center"></div>
-                <img src="image/Logo OX-Lab.png" class="h-full object-contain">
-            </div>
-            <img src="image/logo-polar.png" class="w-12 h-12 md:w-16 md:h-16 object-contain opacity-90">
-        </div>
-
-        <div class="flex-grow flex flex-col items-center justify-center z-10 px-4">
-            <img src="image/7fecb108-1b64-42f5-bd89-6a237e50457e-removebg-preview 1.png" class="w-64 md:w-[480px] filter drop-shadow-2xl animate-[bounce_4s_infinite]">
-        </div>
-
-        <div class="pb-16 flex justify-center z-10">
-            <button onclick="scrollToMenu()" class="px-14 py-4 bg-white text-[#2E3A8C] rounded-full font-bold tracking-widest uppercase hover:scale-105 transition shadow-2xl">Explore More</button>
-        </div>
-    </section>
-
-    <!-- HALAMAN 2: MENU UTAMA -->
-    <section id="menu-utama" class="min-h-screen bg-[#020617] flex flex-col items-center justify-center py-24 px-6 relative overflow-hidden">
-        <div class="mesh-gradient">
-            <div class="mesh-ball w-[600px] h-[600px] bg-blue-900/30 -top-20 -left-20"></div>
-            <div class="mesh-ball w-[500px] h-[500px] bg-purple-900/20 bottom-0 right-0"></div>
-        </div>
-
-        <div class="text-center mb-16 z-10 reveal">
-            <p class="text-blue-400 text-xs font-bold tracking-[0.4em] uppercase mb-4">Discovery</p>
-            <h2 class="text-white text-5xl font-bold">Pilih Menu Utama</h2>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl w-full z-10">
-            <div onclick="scrollToAbout()" class="menu-card bg-white/5 border border-white/10 rounded-[2.5rem] p-10 flex flex-col items-center text-center cursor-pointer reveal">
-                <div class="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-8 border border-blue-500/20">
-                    <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <h3 class="text-white text-xl font-bold mb-3">About Us</h3>
-                <p class="text-gray-400 text-xs">Profil dan perjalanan kreatif studio kami.</p>
-            </div>
-
-            <div onclick="scrollToLecturers()" class="menu-card bg-white/5 border border-white/10 rounded-[2.5rem] p-10 flex flex-col items-center text-center cursor-pointer reveal" style="transition-delay: 0.1s;">
-                <div class="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-8 border border-purple-500/20">
-                    <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                </div>
-                <h3 class="text-white text-xl font-bold mb-3">Lecturer</h3>
-                <p class="text-gray-400 text-xs">Tim pengajar dan pakar industri kami.</p>
-            </div>
-
-            <div onclick="scrollToWork()" class="menu-card bg-white/5 border border-white/10 rounded-[2.5rem] p-10 flex flex-col items-center text-center cursor-pointer reveal" style="transition-delay: 0.2s;">
-                <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-8 border border-emerald-500/20">
-                    <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                </div>
-                <h3 class="text-white text-xl font-bold mb-3">Project</h3>
-                <p class="text-gray-400 text-xs">Karya inovatif yang kami banggakan.</p>
-            </div>
-
-            <div onclick="scrollToGame()" class="menu-card bg-white/5 border border-white/10 rounded-[2.5rem] p-10 flex flex-col items-center text-center cursor-pointer reveal" style="transition-delay: 0.3s;">
-                <div class="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mb-8 border border-amber-500/20">
-                    <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
-                </div>
-                <h3 class="text-white text-xl font-bold mb-3">Play Game</h3>
-                <p class="text-gray-400 text-xs">Coba pengalaman bermain langsung.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- HALAMAN 3: CONTENT -->
-    <section id="about-us" class="min-h-screen bg-black flex flex-col items-center relative overflow-hidden">
-        <div class="w-full relative h-[60vh] overflow-hidden">
-            <img src="image/kakekk.png" class="w-full h-full object-cover object-top opacity-60">
-            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-        </div>
-
-        <div class="max-w-5xl w-full px-8 -mt-32 relative z-10">
-            <div class="mb-16 reveal">
-                <span class="text-blue-500 font-bold tracking-widest uppercase text-xs">Our Identity</span>
-                <h1 class="text-white text-7xl font-bold mt-2">OX LAB</h1>
-                <p class="text-gray-400 text-lg mt-8 leading-relaxed max-w-3xl">
-                    Pengembangan Game merupakan konsentrasi di jurusan <span class="text-white">Produksi Media UI</span> yang fokus mempelajari industri game secara keseluruhan, mulai dari development hingga publishing.
-                </p>
-            </div>
-
-            <!-- SECTION: HISTORY -->
-            <div class="mb-24 reveal">
-                <h2 class="text-white text-2xl font-bold mb-10 flex items-center gap-3">
-                    <span class="w-6 h-[2px] bg-blue-500"></span> History
-                </h2>
-                <div class="max-w-4xl mx-auto px-4">
-                    <div class="timeline-line mb-6">
-                        <div class="timeline-dot" style="left: 0%;"></div>
-                        <div class="timeline-dot" style="right: 0%;"></div>
-                    </div>
-                    <div class="flex justify-between text-xs md:text-sm tracking-wide">
-                        <div class="w-1/2 pr-4">
-                            <p class="text-gray-400 uppercase font-bold text-[10px] mb-1">Establishment</p>
-                            <p class="text-white leading-relaxed">Since 2024 Oxlab at Media Production Universitas Indonesia</p>
-                        </div>
-                        <div class="w-1/2 text-right pl-4">
-                            <p class="text-gray-400 uppercase font-bold text-[10px] mb-1">Recognition</p>
-                            <p class="text-white leading-relaxed">2025 Won Studio of The Year</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COLLAB & ACHIEVE -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32">
-                <div class="glass-card rounded-[2rem] p-8 reveal">
-                    <h2 class="text-white text-2xl font-bold mb-6 flex items-center gap-3"><span class="w-6 h-[2px] bg-blue-500"></span> Collaboration</h2>
-                    <ul class="space-y-4 text-gray-400 text-sm">
-                        <li class="list-star">Agate Studios</li>
-                        <li class="list-star">Asosiasi Game Indonesia</li>
-                        <li class="list-star">IISART</li>
-                    </ul>
-                </div>
-                <div class="glass-card rounded-[2rem] p-8 reveal" style="transition-delay: 0.1s;">
-                    <h2 class="text-white text-2xl font-bold mb-6 flex items-center gap-3"><span class="w-6 h-[2px] bg-purple-500"></span> Achievement</h2>
-                    <ul class="space-y-4 text-gray-400 text-sm">
-                        <li class="list-star font-bold text-white">Finalist Game Jam Plus 2025</li>
-                        <li class="list-star font-bold text-white">Unity Certified Programmer</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- LECTURERS -->
-            <div id="lecturers" class="py-20 border-t border-white/5 reveal">
-                <h2 class="text-white text-4xl font-bold mb-16 text-center">Tenaga Pengajar Profesional</h2>
-                <div class="flex flex-col items-center gap-10">
-                    <div class="w-64">
-                        <div class="lecturer-img-container shadow-2xl">
-                            <img src="image/image_40a307.png" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
-                        </div>
-                        <div class="lecturer-name-tag">Ngurah Rangga Wisesa, Ph.D</div>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
-                        <div class="flex flex-col">
-                            <div class="lecturer-img-container"><img src="image/duray.png" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500"></div>
-                            <div class="lecturer-name-tag">Duray Philip Rompas, M.T.</div>
-                        </div>
-                        <div class="flex flex-col">
-                            <div class="lecturer-img-container"><img src="image/riris.png" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500"></div>
-                            <div class="lecturer-name-tag">Riris Marpaung, M.Hum.</div>
-                        </div>
-                        <div class="flex flex-col">
-                            <div class="lecturer-img-container"><img src="image/livander.png" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500"></div>
-                            <div class="lecturer-name-tag">Livander Surya</div>
-                        </div>
-                        <div class="flex flex-col">
-                            <div class="lecturer-img-container"><img src="image/ardhan.png" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500"></div>
-                            <div class="lecturer-name-tag">M. Ardhan Fadhulrahman</div>
-                        </div>
-                        <div class="flex flex-col">
-                            <div class="lecturer-img-container"><img src="image/cipro.png" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500"></div>
-                            <div class="lecturer-name-tag">Cipro Adiguno</div>
-                        </div>
-                        <div class="flex flex-col">
-                            <div class="lecturer-img-container"><img src="image/shafiq.png" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500"></div>
-                            <div class="lecturer-name-tag">Shafiq Husein</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- OUR WORK -->
-            <div id="our-work" class="py-32 border-t border-white/5 reveal">
-                <h2 class="text-white text-5xl font-bold mb-16 text-center">Our Work</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="project-card p-10 text-center">
-                        <div class="h-40 bg-zinc-900 rounded-2xl mb-8 flex items-center justify-center">
-                            <img src="image/image_4117c3.png" class="h-2/3 object-contain opacity-50">
-                        </div>
-                        <h3 class="text-xl font-bold mb-4">Core Production</h3>
-                        <p class="text-gray-500 text-xs uppercase leading-relaxed">Spellscript • Congklak <br> World War Paws • Reeling</p>
-                    </div>
-                    <div class="project-card p-10 text-center">
-                        <div class="h-40 bg-zinc-900 rounded-2xl mb-8 flex items-center justify-center">
-                            <img src="image/image_418025.png" class="h-2/3 object-contain opacity-50">
-                        </div>
-                        <h3 class="text-xl font-bold mb-4">Creative Series</h3>
-                        <p class="text-gray-500 text-xs uppercase leading-relaxed">KRL Puzzle • Emak Battle <br> Painter's Shoes • Supernatural Baiting</p>
-                    </div>
-                    <div class="project-card p-10 text-center border-blue-500/20 bg-blue-500/5">
-                        <div class="h-40 bg-blue-900/20 rounded-2xl mb-8 flex items-center justify-center border border-blue-500/10">
-                            <span class="text-blue-400 font-black tracking-widest text-sm uppercase">Spiral</span>
-                        </div>
-                        <h3 class="text-xl font-bold mb-4">Flagship Project</h3>
-                        <p class="text-blue-400 text-xs uppercase font-bold">Project Spiral</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NEW SECTION: GAME PREVIEW (PLAY NOW) -->
-            <div id="game-section" class="py-32 border-t border-white/5 reveal">
-                <div class="text-center mb-12">
-                    <span class="text-amber-500 font-bold tracking-widest uppercase text-xs">Interactive Zone</span>
-                    <h2 class="text-white text-5xl font-bold mt-2">Ready to Play?</h2>
-                </div>
-
-                <div class="flex justify-center mb-12">
-                    <div class="game-screen group">
-                        <div class="scanline"></div>
-                        <!-- Thumbnail Game / Initial View -->
-                        <div id="game-poster" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-zinc-900 transition-opacity duration-700">
-                            <img src="image/image_43c239.png" class="absolute inset-0 w-full h-full object-cover opacity-40 blur-sm">
-                            <div class="relative z-30 text-center p-6">
-                                <h3 class="text-4xl font-black italic tracking-tighter mb-4 text-white drop-shadow-lg">SPELLSCRIPT</h3>
-                                <p class="text-gray-300 text-sm mb-8 max-w-sm mx-auto">Masuk ke dunia fantasi dan uji kemampuanmu langsung di browser ini.</p>
-                                <button onclick="startGame()" class="px-12 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-black tracking-widest uppercase transition-all hover:scale-110 shadow-[0_0_30px_rgba(37,99,235,0.4)]">Play Now</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Container untuk Game Anda -->
-                        <div id="game-container" class="absolute inset-0 z-10 flex items-center justify-center bg-black">
-                            <!-- TEMPATKAN CODINGAN GAME ANDA DI SINI -->
-                             <p class="text-gray-600 italic text-sm">Game sedang dimuat...</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex justify-center gap-6">
-                    <div class="text-center">
-                        <p class="text-white font-bold text-xl">100k+</p>
-                        <p class="text-gray-500 text-[10px] uppercase tracking-widest">Active Players</p>
-                    </div>
-                    <div class="w-px h-10 bg-white/10 self-center"></div>
-                    <div class="text-center">
-                        <p class="text-white font-bold text-xl">4.8/5</p>
-                        <p class="text-gray-500 text-[10px] uppercase tracking-widest">User Rating</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HALAMAN 4: SIMPLE CONTACT -->
-            <div id="contact-us" class="py-24 border-t border-white/5 reveal">
-                <div class="max-w-2xl mx-auto text-center">
-                    <h2 class="text-white text-4xl font-bold mb-8">Let's Connect</h2>
-                    <div class="flex flex-col md:flex-row justify-center gap-4">
-                        <a href="mailto:contact@oxlab.ui.ac.id" class="contact-btn flex items-center justify-center gap-4 px-10 py-5 rounded-[2rem] group">
-                            <svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                            <span class="font-bold tracking-widest text-xs uppercase">contact@oxlab.ui.ac.id</span>
-                        </a>
-                        <a href="https://www.instagram.com/oxlab_ui" target="_blank" class="contact-btn flex items-center justify-center gap-4 px-10 py-5 rounded-[2rem] group">
-                            <svg class="w-6 h-6 text-pink-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.975.975 1.247 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.975.975-2.242 1.247-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.975-.975-1.247-2.242-1.308-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.975-.975 2.242-1.247 3.608-1.308 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.058-1.281.072-1.689.072-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.058-1.689-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                            <span class="font-bold tracking-widest text-xs uppercase">@oxlab_ui</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FOOTER NAV -->
-            <div class="mt-10 flex gap-4 pb-20 reveal">
-                <button onclick="scrollToMenu()" class="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] uppercase font-bold tracking-widest hover:bg-white/10 transition">Menu</button>
-                <button onclick="scrollToTop()" class="px-8 py-3 bg-blue-600/10 border border-blue-500/20 rounded-full text-[10px] uppercase font-bold tracking-widest text-blue-400 hover:bg-blue-600/20 transition">Top</button>
-            </div>
-        </div>
-    </section>
-
-    <footer class="py-10 text-center border-t border-white/5 opacity-30 text-[9px] tracking-[0.3em]">
-        © 2025 OX-LAB MEDIA PRODUCTION UNIVERSITAS INDONESIA
-    </footer>
-
-    <script>
-        function scrollToMenu() { document.getElementById('menu-utama').scrollIntoView({ behavior: 'smooth' }); }
-        function scrollToTop() { document.getElementById('beranda').scrollIntoView({ behavior: 'smooth' }); }
-        function scrollToAbout() { document.getElementById('about-us').scrollIntoView({ behavior: 'smooth' }); }
-        function scrollToLecturers() { document.getElementById('lecturers').scrollIntoView({ behavior: 'smooth' }); }
-        function scrollToWork() { document.getElementById('our-work').scrollIntoView({ behavior: 'smooth' }); }
-        function scrollToGame() { document.getElementById('game-section').scrollIntoView({ behavior: 'smooth' }); }
-        function scrollToContact() { document.getElementById('contact-us').scrollIntoView({ behavior: 'smooth' }); }
-
-        // Logic to Start Game
-        function startGame() {
-            const poster = document.getElementById('game-poster');
-            poster.style.opacity = '0';
-            setTimeout(() => {
-                poster.style.display = 'none';
-                initMyGame(); // Panggil fungsi inisialisasi game Anda
-            }, 700);
-        }
-
-        // Fungsi Placeholder untuk Game Anda
-        function initMyGame() {
-            const container = document.getElementById('game-container');
-            // Contoh: memasukkan canvas atau elemen game
-            container.innerHTML = `
-                <div class="text-center p-6">
-                    <p class="text-blue-400 font-bold mb-4 animate-pulse">GAME ENGINE ACTIVATED</p>
-                    <p class="text-xs text-gray-400 uppercase tracking-widest">Silahkan masukkan script game Anda pada fungsi initMyGame() di bagian bawah file HTML ini.</p>
-                </div>
-            `;
-        }
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    </script>
-</body>
-    <div id="spellscript-app">
-    <div id="login-screen" class="game-card">
-        <h1 class="glitch-text">SPELLSCRIPT</h1>
-        <p class="subtitle">IDENTITAS KSATRIA</p>
-        <div class="input-group">
+<div id="game-container">
+    <div id="login-screen">
+        <h1>SPELLSCRIPT</h1>
+        <p style="opacity: 0.6; font-size: 14px;">IDENTITAS KSATRIA</p>
+        <div style="margin-bottom: 20px;">
             <input type="text" id="name-input" placeholder="Masukkan namamu..." autocomplete="off">
-            <button onclick="startGame()" class="btn-primary">MASUK ARENA</button>
         </div>
-        <div id="highscore-view" class="leaderboard"></div>
+        <button onclick="startGame()">MASUK ARENA</button>
+        <div id="highscore-view" style="margin-top: 30px; font-size: 13px; color: #666;"></div>
     </div>
 
-    <div id="game-screen" class="game-card" style="display: none;">
-        <div class="battle-header" id="battle-area">
-            <div class="unit">
-                <span id="p-name" class="unit-name">PLAYER</span>
-                <div class="hp-bar"><div id="p-hp-fill" class="hp-fill player-bg"></div></div>
-                <span id="p-hp-text" class="hp-num">100/100</span>
+    <div id="game-screen" style="display: none;">
+        <div class="battle-view" id="battle-area">
+            <div class="hp-container">
+                <div id="p-name" style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">PLAYER</div>
+                <div class="hp-bar"><div id="p-hp-fill" class="hp-fill" style="background: var(--success);"></div></div>
+                <div id="p-hp-text" style="font-size: 11px; opacity: 0.7;">100/100</div>
             </div>
-            <div class="vs-divider">VS</div>
-            <div class="unit">
-                <span class="unit-name enemy-color">ARCH-WIZARD</span>
-                <div class="hp-bar"><div id="e-hp-fill" class="hp-fill enemy-bg"></div></div>
-                <span id="e-hp-text" class="hp-num">100/100</span>
+            <div style="align-self: center; font-weight: bold; color: #444;">VS</div>
+            <div class="hp-container">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px; color: var(--danger);">ARCH-WIZARD</div>
+                <div class="hp-bar"><div id="e-hp-fill" class="hp-fill" style="background: var(--danger);"></div></div>
+                <div id="e-hp-text" style="font-size: 11px; opacity: 0.7;">100/100</div>
             </div>
         </div>
 
-        <div id="battle-log" class="action-log">Bersiaplah di arena...</div>
+        <div id="battle-log" class="log">Bersiaplah di arena...</div>
 
-        <div class="action-grid">
+        <div class="action-zone">
             <div class="spell-box">
-                <label>⚔️ SERANGAN</label>
-                <div id="atk-word" class="target-word"></div>
+                <div style="font-size: 10px; color: #666; margin-bottom: 5px;">SERANGAN SIHIR</div>
+                <div id="atk-word" class="word-target"></div>
                 <input type="text" id="atk-input" placeholder="ketik..." autocomplete="off">
             </div>
             <div class="spell-box">
-                <label>🧪 PEMULIHAN</label>
-                <div id="heal-word" class="target-word"></div>
+                <div style="font-size: 10px; color: #666; margin-bottom: 5px;">MANTRA PEMULIH</div>
+                <div id="heal-word" class="word-target"></div>
                 <input type="text" id="heal-input" placeholder="ketik..." autocomplete="off">
             </div>
         </div>
 
-        <div class="footer-stats">
-            SKOR: <span id="score-val">0</span>
-            <button id="btn-menu" style="display:none;" onclick="location.reload()">KEMBALI KE MENU</button>
+        <div style="margin-top: 30px; font-size: 14px;">
+            SKOR: <span id="score-val" style="color: var(--primary); font-weight: bold;">0</span>
         </div>
+        <button id="btn-menu" style="display:none; margin-top: 20px;" onclick="location.reload()">MENU UTAMA</button>
     </div>
 </div>
 
-    <Style>
-        :root {
-    --gold: #f1c40f;
-    --dark: #121212;
-    --card: #1e1e1e;
-    --red: #ff4757;
-    --green: #2ed573;
-    --gray: #a4b0be;
-}
+<script>
+    let player = { name: "", hp: 100, maxHp: 100 };
+    let enemy = { hp: 100, maxHp: 100 };
+    let score = 0;
+    let isActive = false;
+    let enemyActionTimer;
 
-#spellscript-app {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 500px;
-    color: #fff;
-}
+    const words = [
+        'transformasi', 'implementasi', 'sinkronisasi', 'akomodasi', 'karakteristik', 
+        'spesialisasi', 'dokumentasi', 'fundamental', 'interpretasi', 'konvensional',
+        'metamorfosis', 'revolusioner', 'kategorisasi', 'infrastruktur', 'multidimensional',
+        'standardisasi', 'dekonstruksi', 'probabilitas', 'signifikansi', 'akreditasi'
+    ];
 
-.game-card {
-    background: var(--card);
-    padding: 2rem;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 550px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    border: 1px solid #333;
-    animation: fadeIn 0.5s ease-out;
-}
+    window.onload = loadLeaderboard;
 
-h1.glitch-text {
-    color: var(--gold);
-    letter-spacing: 5px;
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.subtitle { color: var(--gray); font-size: 0.8rem; margin-bottom: 1.5rem; }
-
-.input-group { display: flex; flex-direction: column; gap: 10px; }
-
-input[type="text"] {
-    background: #000;
-    border: 1px solid #444;
-    color: #fff;
-    padding: 12px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1rem;
-    transition: 0.3s;
-}
-
-input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(241,196,15,0.2); }
-
-.btn-primary {
-    background: #333;
-    border: none;
-    color: #fff;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-primary:hover { background: var(--gold); color: #000; }
-
-/* Battle Layout */
-.battle-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0,0,0,0.3);
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-}
-
-.unit { width: 40%; }
-.unit-name { font-size: 0.9rem; font-weight: bold; display: block; margin-bottom: 5px; }
-.hp-bar { height: 8px; background: #333; border-radius: 4px; overflow: hidden; }
-.hp-fill { height: 100%; width: 100%; transition: width 0.6s ease; }
-.player-bg { background: var(--green); }
-.enemy-bg { background: var(--red); }
-.enemy-color { color: var(--red); }
-.hp-num { font-size: 0.7rem; opacity: 0.6; }
-
-.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.spell-box { background: #252525; padding: 15px; border-radius: 10px; border: 1px solid #333; }
-.spell-box label { font-size: 0.7rem; color: var(--gray); display: block; }
-.target-word { color: var(--gold); font-weight: bold; margin: 10px 0; min-height: 20px; font-family: monospace; }
-
-.action-log { min-height: 40px; margin: 1rem 0; font-size: 0.9rem; font-style: italic; color: #ccc; transition: 0.3s; }
-
-.hit-shake { animation: shake 0.4s ease-in-out; }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-
-/* Mobile optimization */
-@media (max-width: 480px) {
-    .action-grid { grid-template-columns: 1fr; }
-    .game-card { width: 95%; padding: 1rem; }
-}
-
-        <script>
-        const words = ['sinkronisasi', 'implementasi', 'karakteristik', 'multidimensional', 'standardisasi', 'dekonstruksi', 'metamorfosis', 'akomodasi', 'probabilitas', 'interpretasi'];
-
-let gameState = {
-    player: { hp: 100, name: "" },
-    enemy: { hp: 100 },
-    score: 0,
-    active: false,
-    timer: null
-};
-
-window.onload = updateLeaderboard;
-
-function startGame() {
-    const nameInput = document.getElementById('name-input');
-    if (!nameInput.value) return alert("Siapa namamu?");
-    
-    gameState.player.name = nameInput.value;
-    document.getElementById('p-name').innerText = gameState.player.name.toUpperCase();
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('game-screen').style.display = 'block';
-    
-    startBattle();
-}
-
-function startBattle() {
-    gameState.active = true;
-    gameState.player.hp = 100;
-    gameState.enemy.hp = 100;
-    refreshWords();
-    updateUI();
-    document.getElementById('atk-input').focus();
-    gameState.timer = setInterval(enemyAction, 4500);
-}
-
-function refreshWords() {
-    document.getElementById('atk-word').innerText = words[Math.floor(Math.random() * words.length)];
-    document.getElementById('heal-word').innerText = words[Math.floor(Math.random() * words.length)];
-}
-
-document.querySelectorAll('.spell-box input').forEach(input => {
-    input.addEventListener('input', (e) => {
-        if (!gameState.active) return;
-        const target = e.target.id === 'atk-input' ? 'atk-word' : 'heal-word';
+    function startGame() {
+        const name = document.getElementById('name-input').value;
+        if(!name) return alert("Siapa namamu, Ksatria?");
         
-        if (e.target.value.toLowerCase() === document.getElementById(target).innerText) {
-            if (e.target.id === 'atk-input') {
-                gameState.enemy.hp -= 20;
-                gameState.score += 15;
-                notify("Serangan telak!");
-                triggerAnim('battle-area');
-            } else {
-                gameState.player.hp = Math.min(100, gameState.player.hp + 15);
-                notify("Mantra pemulih berhasil!");
-            }
-            e.target.value = "";
-            refreshWords();
-            updateUI();
-            checkGameOver();
+        player.name = name;
+        document.getElementById('p-name').innerText = name.toUpperCase();
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'block';
+        
+        initBattle();
+    }
+
+    function initBattle() {
+        player.hp = 100; enemy.hp = 100; score = 0; isActive = true;
+        updateUI();
+        refreshWords();
+        document.getElementById('atk-input').focus();
+        if(enemyActionTimer) clearInterval(enemyActionTimer);
+        enemyActionTimer = setInterval(enemyTurn, 4500);
+    }
+
+    function refreshWords() {
+        document.getElementById('atk-word').innerText = words[Math.floor(Math.random()*words.length)];
+        document.getElementById('heal-word').innerText = words[Math.floor(Math.random()*words.length)];
+    }
+
+    document.getElementById('atk-input').addEventListener('input', function(e) {
+        if(!isActive) return;
+        if(e.target.value.toLowerCase() === document.getElementById('atk-word').innerText) {
+            enemy.hp -= 20; score += 15;
+            triggerHitEffect('battle-area');
+            logAction("Serangan telak! Musuh terguncang.");
+            finalizeTurn(e.target);
         }
     });
-});
 
-function enemyAction() {
-    if (!gameState.active) return;
-    if (gameState.enemy.hp < 30 && Math.random() > 0.5) {
-        gameState.enemy.hp = Math.min(100, gameState.enemy.hp + 10);
-        notify("Musuh memulihkan diri...");
-    } else {
-        gameState.player.hp -= 12;
-        notify("Musuh menyerang balik!");
-        triggerAnim('spellscript-app');
+    document.getElementById('heal-input').addEventListener('input', function(e) {
+        if(!isActive) return;
+        if(e.target.value.toLowerCase() === document.getElementById('heal-word').innerText) {
+            player.hp = Math.min(player.maxHp, player.hp + 15);
+            logAction("Mantra berhasil! Luka pulih sedikit.");
+            finalizeTurn(e.target);
+        }
+    });
+
+    function finalizeTurn(inputEl) {
+        inputEl.value = "";
+        refreshWords();
+        updateUI();
+        checkDeath();
     }
-    updateUI();
-    checkGameOver();
-}
 
-function updateUI() {
-    document.getElementById('p-hp-fill').style.width = gameState.player.hp + "%";
-    document.getElementById('e-hp-fill').style.width = gameState.enemy.hp + "%";
-    document.getElementById('p-hp-text').innerText = `${Math.max(0, gameState.player.hp)}/100`;
-    document.getElementById('e-hp-text').innerText = `${Math.max(0, gameState.enemy.hp)}/100`;
-    document.getElementById('score-val').innerText = gameState.score;
-}
-
-function notify(msg) {
-    const log = document.getElementById('battle-log');
-    log.innerText = msg;
-}
-
-function triggerAnim(id) {
-    const el = document.getElementById(id);
-    el.classList.remove('hit-shake');
-    void el.offsetWidth;
-    el.classList.add('hit-shake');
-}
-
-function checkGameOver() {
-    if (gameState.player.hp <= 0 || gameState.enemy.hp <= 0) {
-        gameState.active = false;
-        clearInterval(gameState.timer);
-        notify(gameState.enemy.hp <= 0 ? "Kemenangan Mutlak!" : "Kamu Gugur...");
-        saveScore();
-        document.getElementById('btn-menu').style.display = 'inline-block';
+    function enemyTurn() {
+        if(!isActive) return;
+        if(enemy.hp < 35 && Math.random() > 0.5) {
+            enemy.hp = Math.min(enemy.maxHp, enemy.hp + 12);
+            logAction("Musuh memulihkan energinya...");
+        } else {
+            player.hp -= 12;
+            triggerHitEffect('game-container');
+            logAction("Musuh membalas seranganmu!");
+        }
+        updateUI();
+        checkDeath();
     }
-}
 
-function saveScore() {
-    let scores = JSON.parse(localStorage.getItem('ss_scores')) || [];
-    scores.push({ name: gameState.player.name, val: gameState.score });
-    scores.sort((a, b) => b.val - a.val);
-    localStorage.setItem('ss_scores', JSON.stringify(scores.slice(0, 5)));
-}
-
-function updateLeaderboard() {
-    const scores = JSON.parse(localStorage.getItem('ss_scores')) || [];
-    const view = document.getElementById('highscore-view');
-    if (scores.length > 0) {
-        view.innerHTML = `<strong>LIMA TERBAIK:</strong><br>` + scores.map(s => `${s.name}: ${s.val}`).join('<br>');
+    function triggerHitEffect(id) {
+        const el = document.getElementById(id);
+        el.classList.remove('hit');
+        void el.offsetWidth; // Trigger reflow
+        el.classList.add('hit');
     }
-}
 
+    function updateUI() {
+        document.getElementById('p-hp-fill').style.width = player.hp + "%";
+        document.getElementById('e-hp-fill').style.width = enemy.hp + "%";
+        document.getElementById('p-hp-text').innerText = `${Math.max(0, player.hp)}/100`;
+        document.getElementById('e-hp-text').innerText = `${Math.max(0, enemy.hp)}/100`;
+        document.getElementById('score-val').innerText = score;
+    }
+
+    function logAction(msg) {
+        const logEl = document.getElementById('battle-log');
+        logEl.style.opacity = 0;
+        setTimeout(() => {
+            logEl.innerText = msg;
+            logEl.style.opacity = 1;
+        }, 150);
+    }
+
+    function checkDeath() {
+        if(enemy.hp <= 0 || player.hp <= 0) {
+            isActive = false;
+            clearInterval(enemyActionTimer);
+            logAction(enemy.hp <= 0 ? "KEMENANGAN! Musuh telah tumbang." : "KEKALAHAN... Kamu telah gugur.");
+            saveScore();
+            document.getElementById('btn-menu').style.display = 'inline-block';
+        }
+    }
+
+    function saveScore() {
+        let scores = JSON.parse(localStorage.getItem('spellscript_scores')) || [];
+        scores.push({name: player.name, score: score});
+        scores.sort((a,b) => b.score - a.score);
+        localStorage.setItem('spellscript_scores', JSON.stringify(scores.slice(0, 5)));
+    }
+
+    function loadLeaderboard() {
+        let scores = JSON.parse(localStorage.getItem('spellscript_scores')) || [];
+        if(scores.length === 0) return;
+        let html = "<p style='margin-bottom:10px'>LIMA TERBAIK</p>";
+        scores.forEach((s, i) => {
+            html += `<div style="margin: 5px 0;">${i+1}. ${s.name} — <span style="color:#f1c40f">${s.score}</span></div>`;
+        });
+        document.getElementById('highscore-view').innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
