@@ -391,25 +391,160 @@
         function scrollToGame() { document.getElementById('game-section').scrollIntoView({ behavior: 'smooth' }); }
         function scrollToContact() { document.getElementById('contact-us').scrollIntoView({ behavior: 'smooth' }); }
 
-        // Logic to Start Game
-        function startGame() {
-            const poster = document.getElementById('game-poster');
-            poster.style.opacity = '0';
-            setTimeout(() => {
-                poster.style.display = 'none';
-                initMyGame(); // Panggil fungsi inisialisasi game Anda
-            }, 700);
-        }
-
-        // Fungsi Placeholder untuk Game Anda
         function initMyGame() {
-            const container = document.getElementById('game-container');
-            // Contoh: memasukkan canvas atau elemen game
-            container.innerHTML = `
-                <div class="text-center p-6">
-                    <p class="text-blue-400 font-bold mb-4 animate-pulse">GAME ENGINE ACTIVATED</p>
-                    <p class="text-xs text-gray-400 uppercase tracking-widest">Silahkan masukkan script game Anda pada fungsi initMyGame() di bagian bawah file HTML ini.</p>
+    const container = document.getElementById('game-container');
+    
+    // Memasukkan HTML Game ke dalam container
+    container.innerHTML = `
+        <div id="spellscript-app">
+            <div id="ss-login-screen" class="ss-game-card">
+                <h1 class="ss-title">SPELLSCRIPT</h1>
+                <p class="ss-subtitle">IDENTITAS KSATRIA ARENA</p>
+                <div class="ss-input-group">
+                    <input type="text" id="ss-name-input" class="ss-input-text" placeholder="Ketik namamu..." autocomplete="off">
+                    <button onclick="ssStartGame()" class="ss-btn">MASUK ARENA</button>
                 </div>
+            </div>
+
+            <div id="ss-game-screen" class="ss-game-card" style="display: none;">
+                <div class="ss-battle-header" id="ss-battle-area">
+                    <div class="ss-unit">
+                        <span id="ss-p-name" class="ss-unit-name">PLAYER</span>
+                        <div class="ss-hp-bar"><div id="ss-p-hp-fill" class="ss-hp-fill ss-player-bg"></div></div>
+                        <span id="ss-p-hp-text" class="ss-hp-num">100/100</span>
+                    </div>
+                    <div class="ss-vs">VS</div>
+                    <div class="ss-unit">
+                        <span class="ss-unit-name ss-enemy-color">ARCH-WIZARD</span>
+                        <div class="ss-hp-bar"><div id="ss-e-hp-fill" class="ss-hp-fill ss-enemy-bg"></div></div>
+                        <span id="ss-e-hp-text" class="ss-hp-num">100/100</span>
+                    </div>
+                </div>
+
+                <div id="ss-battle-log" class="ss-action-log">Bersiaplah...</div>
+
+                <div class="ss-action-grid">
+                    <div class="ss-spell-box">
+                        <label class="ss-spell-label">⚔️ SERANG (ATK)</label>
+                        <div id="ss-atk-word" class="ss-target-word"></div>
+                        <input type="text" id="ss-atk-input" class="ss-input-battle" placeholder="ketik..." autocomplete="off">
+                    </div>
+                    <div class="ss-spell-box">
+                        <label class="ss-spell-label">🧪 PULIH (HEAL)</label>
+                        <div id="ss-heal-word" class="ss-target-word"></div>
+                        <input type="text" id="ss-heal-input" class="ss-input-battle" placeholder="ketik..." autocomplete="off">
+                    </div>
+                </div>
+                <div class="ss-footer-stats">SKOR: <span id="ss-score-val">0</span></div>
+            </div>
+        </div>
+    `;
+
+    // Injeksi CSS ke dalam Head secara otomatis
+    const style = document.createElement('style');
+    style.innerHTML = `
+        #spellscript-app { font-family: sans-serif; color: white; width: 100%; display: flex; justify-content: center; }
+        .ss-game-card { background: #1a1a1b; padding: 30px; border-radius: 15px; width: 100%; max-width: 500px; border: 1px solid #333; }
+        .ss-title { color: #f1c40f; letter-spacing: 5px; margin-bottom: 5px; }
+        .ss-subtitle { color: #888; font-size: 12px; margin-bottom: 20px; }
+        .ss-input-text, .ss-input-battle { background: #000; border: 1px solid #444; color: white; padding: 12px; border-radius: 8px; width: 100%; text-align: center; }
+        .ss-btn { background: #444; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .ss-btn:hover { background: #f1c40f; color: black; }
+        .ss-battle-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; }
+        .ss-unit { width: 40%; }
+        .ss-hp-bar { height: 10px; background: #333; border-radius: 5px; overflow: hidden; margin: 5px 0; }
+        .ss-hp-fill { height: 100%; width: 100%; transition: 0.5s; }
+        .ss-player-bg { background: #2ecc71; }
+        .ss-enemy-bg { background: #e74c3c; }
+        .ss-action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .ss-spell-box { background: #252526; padding: 15px; border-radius: 10px; }
+        .ss-target-word { color: #f1c40f; font-weight: bold; font-size: 1.1rem; margin: 10px 0; min-height: 20px; font-family: monospace; }
+        .ss-action-log { font-style: italic; color: #aaa; margin: 15px 0; min-height: 20px; }
+    `;
+    document.head.appendChild(style);
+}
+
+        // --- LOGIKA UTAMA GAME ---
+const ssWordsList = ['transformasi', 'sinkronisasi', 'implementasi', 'akomodasi', 'karakteristik', 'metamorfosis', 'dokumentasi', 'fundamental'];
+let ssData = { playerHp: 100, enemyHp: 100, score: 0, active: false, timer: null };
+
+function ssStartGame() {
+    const name = document.getElementById('ss-name-input').value;
+    if (!name) return alert("Masukkan nama ksatria!");
+    
+    document.getElementById('ss-p-name').innerText = name.toUpperCase();
+    document.getElementById('ss-login-screen').style.display = 'none';
+    document.getElementById('ss-game-screen').style.display = 'block';
+    
+    ssData.active = true;
+    ssData.playerHp = 100;
+    ssData.enemyHp = 100;
+    ssData.score = 0;
+    
+    ssRefreshWords();
+    ssUpdateUI();
+    ssData.timer = setInterval(ssEnemyAction, 4000); // Musuh nyerang tiap 4 detik
+}
+
+function ssRefreshWords() {
+    document.getElementById('ss-atk-word').innerText = ssWordsList[Math.floor(Math.random() * ssWordsList.length)];
+    document.getElementById('ss-heal-word').innerText = ssWordsList[Math.floor(Math.random() * ssWordsList.length)];
+}
+
+// Deteksi ketikan pemain
+document.addEventListener('input', (e) => {
+    if (!ssData.active) return;
+    if (e.target.id === 'ss-atk-input' || e.target.id === 'ss-heal-input') {
+        const isAtk = e.target.id === 'ss-atk-input';
+        const target = document.getElementById(isAtk ? 'ss-atk-word' : 'ss-heal-word').innerText;
+        
+        if (e.target.value.toLowerCase() === target) {
+            if (isAtk) {
+                ssData.enemyHp -= 20;
+                ssData.score += 10;
+                ssNotify("Serangan Telak!");
+            } else {
+                ssData.playerHp = Math.min(100, ssData.playerHp + 15);
+                ssNotify("Darah Bertambah!");
+            }
+            e.target.value = "";
+            ssRefreshWords();
+            ssUpdateUI();
+            ssCheckEnd();
+        }
+    }
+});
+
+function ssEnemyAction() {
+    if (!ssData.active) return;
+    ssData.playerHp -= 12;
+    ssNotify("Musuh Menyerangmu!");
+    ssUpdateUI();
+    ssCheckEnd();
+}
+
+function ssUpdateUI() {
+    document.getElementById('ss-p-hp-fill').style.width = ssData.playerHp + "%";
+    document.getElementById('ss-e-hp-fill').style.width = ssData.enemyHp + "%";
+    document.getElementById('ss-p-hp-text').innerText = ssData.playerHp + "/100";
+    document.getElementById('ss-e-hp-text').innerText = ssData.enemyHp + "/100";
+    document.getElementById('ss-score-val').innerText = ssData.score;
+}
+
+function ssNotify(msg) {
+    document.getElementById('ss-battle-log').innerText = msg;
+}
+
+function ssCheckEnd() {
+    if (ssData.playerHp <= 0 || ssData.enemyHp <= 0) {
+        ssData.active = false;
+        clearInterval(ssData.timer);
+        alert(ssData.enemyHp <= 0 ? "KEMENANGAN!" : "KAMU KALAH!");
+        location.reload();
+    }
+}
+
+                
             `;
         }
 
