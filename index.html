@@ -3,176 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ketemusetan.id - Panggilan Tak Terduga</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <title>Spellscript - Typing Battle</title>
     <style>
-        /* CSS Dasar */
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #1a1a2e; /* Latar belakang gelap, elegan */
-            color: #e4e4f0;
+            background-color: #1a1a1a;
+            color: #e0d8c3;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #game-container {
             text-align: center;
-            overflow: hidden; /* Menyembunyikan elemen yang melayang di luar */
+            background: #2b2b2b;
+            padding: 30px;
+            border: 4px solid #4a3f35;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Container utama */
-        .container {
-            background-color: rgba(27, 27, 47, 0.9);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-            width: 90%;
-            opacity: 0; /* Awalnya tersembunyi untuk transisi masuk */
-            transform: translateY(20px);
-            animation: fadeIn 1s ease-out forwards;
+        .battle-area {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 20px 0;
+            border-bottom: 2px solid #4a3f35;
         }
 
-        /* Judul Utama */
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5em;
-            color: #ffcc00; /* Warna kontras, seperti cahaya */
-            margin-bottom: 0px;
-            letter-spacing: 2px;
-            transition: color 0.5s ease;
+        .character {
+            font-size: 50px;
         }
 
-        h1:hover {
-            color: #ffeeaa; /* Efek hover halus */
-        }
-
-        /* Tagline Melayang */
-        .tagline {
-            font-size: 1.2em;
-            color: #a0a0c0;
+        .hp-bar {
+            width: 100%;
+            height: 10px;
+            background: #444;
             margin-top: 5px;
-            margin-bottom: 30px;
-            /* Animasi Melayang */
-            animation: floatText 4s ease-in-out infinite;
-            display: block; /* Penting untuk animasi */
         }
 
-        /* Transisi Smooth untuk Tombol */
-        .cta-button {
-            background-color: #e94560; /* Warna tombol yang menarik */
-            color: #fff;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s ease; /* Transisi untuk hover dan focus */
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        .hp-fill {
+            height: 100%;
+            background: #e74c3c;
+            width: 100%;
+            transition: width 0.3s;
         }
 
-        .cta-button:hover {
-            background-color: #d83a54;
-            transform: translateY(-3px); /* Efek mengangkat */
-            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
-        }
-
-        .cta-button:active {
-            transform: translateY(0);
-        }
-
-        /* Deskripsi */
-        .description {
-            margin: 20px 0;
-            font-size: 1.1em;
-            line-height: 1.6;
-            transition: color 0.5s ease;
-        }
-
-        /* Hasil Panggilan */
-        #setan-result {
-            margin-top: 30px;
-            font-size: 1.5em;
+        #word-display {
+            font-size: 28px;
             font-weight: bold;
-            color: #ff6f61; /* Warna untuk hasil */
-            min-height: 1.5em; /* Memastikan ruang tetap */
-            transition: opacity 0.5s ease;
+            letter-spacing: 2px;
+            margin: 20px 0;
+            color: #f1c40f;
+            text-shadow: 2px 2px #000;
         }
 
-        /* --- KEYFRAMES untuk Animasi Smooth --- */
-
-        /* Animasi masuk halaman */
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 18px;
+            background: #3d3d3d;
+            border: 2px solid #4a3f35;
+            color: white;
+            text-align: center;
+            outline: none;
         }
 
-        /* Animasi Teks Melayang */
-        @keyframes floatText {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-5px); /* Bergerak sedikit ke atas */
-            }
-            100% {
-                transform: translateY(0px);
-            }
+        .stats {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+            height: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>ketemusetan.id</h1>
-        <span class="tagline">"Meelayang di Antara Dimensi yang Berbeda"</span>
-
-        <p class="description">
-            Selamat datang di gerbang tak terduga. Kami menyediakan deskripsi singkat dan jalur cepat menuju penampakan, baik yang nyata maupun sekadar ilusi. Siapkan mental Anda.
-        </p>
-
-        <button class="cta-button" onclick="panggilSetan()">
-            PANGGIL SETAN ACAK 👻
-        </button>
-
-        <p id="setan-result"></p>
+<div id="game-container">
+    <div class="battle-area">
+        <div id="player-side">
+            <div class="character">⚔️</div>
+            <div style="font-size: 12px;">PLAYER</div>
+            <div class="hp-bar"><div id="player-hp" class="hp-fill"></div></div>
+        </div>
+        <div id="enemy-side">
+            <div class="character">👹</div>
+            <div style="font-size: 12px;">ENEMY</div>
+            <div class="hp-bar"><div id="enemy-hp" class="hp-fill"></div></div>
+        </div>
     </div>
 
-    <script>
-        const setanList = [
-            "Pocong",
-            "Kuntilanak",
-            "Genderuwo",
-            "Wewe Gombel",
-            "Sundel Bolong",
-            "Leak Bali",
-            "Tuyul",
-            "Jin",
-            "Begu Ganjang"
-        ];
+    <div id="word-display">Tekan Start!</div>
+    <input type="text" id="input-word" placeholder="Ketik di sini..." disabled>
+    
+    <div id="message"></div>
+    
+    <button id="start-btn" style="margin-top: 20px; padding: 10px 20px; cursor: pointer;">Mulai Game</button>
 
-        function panggilSetan() {
-            const resultElement = document.getElementById('setan-result');
-            
-            // Transisi keluar (membuat hasil sebelumnya pudar)
-            resultElement.style.opacity = '0'; 
+    <div class="stats">
+        Skor: <span id="score">0</span>
+    </div>
+</div>
 
-            // Setelah transisi pudar selesai, ganti teks
-            setTimeout(() => {
-                const randomIndex = Math.floor(Math.random() * setanList.length);
-                const setan = setanList[randomIndex];
-                
-                resultElement.textContent = `Anda berhasil memanggil: ${setan}!`;
-                
-                // Transisi masuk (membuat hasil baru muncul)
-                resultElement.style.opacity = '1'; 
-            }, 300); // Waktu ini harus sesuai dengan transition CSS
+<script>
+    const wordDisplay = document.getElementById('word-display');
+    const inputWord = document.getElementById('input-word');
+    const startBtn = document.getElementById('start-btn');
+    const scoreDisplay = document.getElementById('score');
+    const enemyHpBar = document.getElementById('enemy-hp');
+    const playerHpBar = document.getElementById('player-hp');
+    const message = document.getElementById('message');
+
+    const words = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember', 'pedang', 'sihir', 'ksatria', 'naga', 'istana', 'hutan'];
+    
+    let score = 0;
+    let enemyHp = 100;
+    let playerHp = 100;
+    let currentWord = '';
+    let gameActive = false;
+    let enemyInterval;
+
+    function startGame() {
+        score = 0;
+        enemyHp = 100;
+        playerHp = 100;
+        gameActive = true;
+        scoreDisplay.innerText = score;
+        updateHpBars();
+        inputWord.disabled = false;
+        inputWord.value = '';
+        inputWord.focus();
+        startBtn.style.display = 'none';
+        message.innerText = '';
+        nextWord();
+        
+        // Musuh menyerang setiap 3 detik jika kita tidak mengetik
+        enemyInterval = setInterval(enemyAttack, 3000);
+    }
+
+    function nextWord() {
+        const randomIndex = Math.floor(Math.random() * words.length);
+        currentWord = words[randomIndex];
+        wordDisplay.innerText = currentWord;
+    }
+
+    function enemyAttack() {
+        if (!gameActive) return;
+        playerHp -= 10;
+        updateHpBars();
+        message.innerText = 'Musuh menyerang! -10 HP';
+        message.style.color = '#e74c3c';
+        checkGameOver();
+    }
+
+    inputWord.addEventListener('input', () => {
+        if (inputWord.value.toLowerCase() === currentWord) {
+            score += 10;
+            enemyHp -= 15;
+            scoreDisplay.innerText = score;
+            inputWord.value = '';
+            message.innerText = 'Serangan berhasil!';
+            message.style.color = '#2ecc71';
+            updateHpBars();
+            checkGameOver();
+            if (gameActive) nextWord();
         }
-    </script>
+    });
+
+    function updateHpBars() {
+        enemyHpBar.style.width = enemyHp + '%';
+        playerHpBar.style.width = playerHp + '%';
+    }
+
+    function checkGameOver() {
+        if (enemyHp <= 0) {
+            endGame('MENANG! Musuh kalah.');
+        } else if (playerHp <= 0) {
+            endGame('KALAH! HP kamu habis.');
+        }
+    }
+
+    function endGame(msg) {
+        gameActive = false;
+        clearInterval(enemyInterval);
+        inputWord.disabled = true;
+        wordDisplay.innerText = 'Game Over';
+        message.innerText = msg;
+        startBtn.style.display = 'inline-block';
+        startBtn.innerText = 'Main Lagi';
+    }
+
+    startBtn.addEventListener('click', startGame);
+</script>
+
 </body>
 </html>
