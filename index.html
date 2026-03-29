@@ -3,309 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spellscript - Typing Battle</title>
+    <title>Spellscript: Tactical Battle</title>
     <style>
         body {
-            background-color: #121212;
-            color: #d4c4a8;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f0f0f;
+            color: #d1c1a1;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
         }
 
         #game-container {
+            background: #1a1a1b;
+            padding: 30px;
+            border: 3px solid #3e3e3e;
+            border-radius: 8px;
+            width: 500px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.7);
             text-align: center;
-            background: linear-gradient(145deg, #1e1e1e, #252525);
-            padding: 40px;
-            border: 2px solid #3d3d3d;
-            border-radius: 15px;
-            width: 450px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* Layar Input Nama */
-        #login-screen {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        /* Menu Login */
+        #login-screen { display: flex; flex-direction: column; gap: 15px; }
 
-        /* Layar Utama Game */
-        #game-screen {
-            display: none;
-        }
+        /* Layar Utama */
+        #game-screen { display: none; }
 
-        .battle-area {
+        .battle-view {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            background: #111;
             padding: 20px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
         }
 
-        .character-box {
-            width: 100px;
+        .hp-container { width: 120px; }
+        .hp-bar { height: 12px; background: #333; border-radius: 6px; overflow: hidden; margin: 8px 0; }
+        .hp-fill { height: 100%; width: 100%; transition: width 0.5s ease; }
+        .player-hp { background: #2ecc71; }
+        .enemy-hp { background: #e74c3c; }
+
+        .action-zone {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        .char-icon {
-            font-size: 60px;
-            margin-bottom: 10px;
-        }
-
-        .hp-bar {
-            width: 100%;
-            height: 8px;
-            background: #333;
+        .spell-box {
+            background: #252526;
+            padding: 15px;
+            border: 1px solid #444;
             border-radius: 4px;
-            overflow: hidden;
         }
 
-        .hp-fill {
-            height: 100%;
-            background: #c0392b;
-            width: 100%;
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        #word-display {
-            font-size: 32px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            margin: 30px 0;
-            color: #f1c40f;
-            text-transform: lowercase;
-        }
+        .label { font-size: 11px; color: #888; margin-bottom: 5px; text-transform: uppercase; }
+        .word-target { font-size: 18px; font-weight: bold; color: #f1c40f; margin-bottom: 10px; min-height: 22px; }
 
         input {
-            width: 90%;
-            padding: 12px;
-            font-size: 18px;
-            background: #2d2d2d;
-            border: 1px solid #444;
+            width: 80%;
+            padding: 8px;
+            background: #111;
+            border: 1px solid #555;
             color: #fff;
             text-align: center;
-            border-radius: 5px;
-            outline: none;
+            font-family: inherit;
         }
 
-        input:focus {
-            border-color: #f1c40f;
-        }
+        input:focus { border-color: #f1c40f; outline: none; }
 
-        button {
-            padding: 12px 25px;
-            background: #4a3f35;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #635548;
-        }
-
-        .stats-row {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 25px;
+        .log {
             font-size: 13px;
-            color: #777;
+            height: 40px;
+            margin: 15px 0;
+            color: #aaa;
+            font-style: italic;
         }
 
-        #highscore-list {
-            margin-top: 15px;
-            text-align: left;
-            font-size: 12px;
-            border-top: 1px solid #333;
-            padding-top: 10px;
+        #highscore-view { font-size: 12px; margin-top: 20px; border-top: 1px solid #333; padding-top: 10px; }
+        
+        button {
+            padding: 10px 20px;
+            background: #3e3e3e;
+            color: #fff;
+            border: 1px solid #555;
+            cursor: pointer;
         }
-
-        .msg-pop {
-            height: 20px;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
+        button:hover { background: #4e4e4e; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
     <div id="login-screen">
-        <h2 style="color: #f1c40f;">SPELLSCRIPT</h2>
-        <p>Masukkan namamu untuk memulai duel:</p>
-        <input type="text" id="username-input" placeholder="Nama Ksatria..." maxlength="12">
-        <button onclick="enterGame()">MASUK</button>
-        <div id="highscore-list">
-            <center><b>Papan Peringkat Teratas:</b></center>
-            <div id="scores-content" style="margin-top: 5px;"></div>
-        </div>
+        <h1 style="color:#f1c40f; letter-spacing: 5px;">SPELLSCRIPT</h1>
+        <p>IDENTITAS KSATRIA:</p>
+        <input type="text" id="name-input" placeholder="Ketik namamu..." autocomplete="off">
+        <button onclick="startGame()">MASUK ARENA</button>
+        <div id="highscore-view"></div>
     </div>
 
     <div id="game-screen">
-        <div class="battle-area">
-            <div class="character-box">
-                <div class="char-icon">🛡️</div>
-                <div id="display-name" style="font-size: 10px; margin-bottom: 5px;">PLAYER</div>
-                <div class="hp-bar"><div id="player-hp" class="hp-fill"></div></div>
+        <div class="battle-view">
+            <div class="hp-container">
+                <div id="p-name" style="font-size:12px">PLAYER</div>
+                <div class="hp-bar"><div id="p-hp-fill" class="hp-fill player-hp"></div></div>
+                <div id="p-hp-text" style="font-size:10px">100/100</div>
             </div>
-            <div style="align-self: center; font-style: italic; color: #555;">VS</div>
-            <div class="character-box">
-                <div class="char-icon">🐉</div>
-                <div style="font-size: 10px; margin-bottom: 5px;">BOSS</div>
-                <div class="hp-bar"><div id="enemy-hp" class="hp-fill"></div></div>
+            <div style="align-self:center; color:#444">VS</div>
+            <div class="hp-container">
+                <div style="font-size:12px">ARCH-WIZARD</div>
+                <div class="hp-bar"><div id="e-hp-fill" class="hp-fill enemy-hp"></div></div>
+                <div id="e-hp-text" style="font-size:10px">100/100</div>
             </div>
         </div>
 
-        <div class="msg-pop" id="game-msg"></div>
-        <div id="word-display">siap?</div>
-        <input type="text" id="typing-input" placeholder="ketik di sini..." autocomplete="off">
-        
-        <div class="stats-row">
-            <div>SKOR: <span id="current-score">0</span></div>
-            <button id="restart-btn" style="display:none; padding: 5px 10px;" onclick="resetToMenu()">MENU</button>
+        <div id="battle-log" class="log">Bersiaplah...</div>
+
+        <div class="action-zone">
+            <div class="spell-box">
+                <div class="label">⚔️ SERANG (ATK)</div>
+                <div id="atk-word" class="word-target"></div>
+                <input type="text" id="atk-input" placeholder="ketik..." autocomplete="off">
+            </div>
+            <div class="spell-box">
+                <div class="label">🧪 PULIH (HEAL)</div>
+                <div id="heal-word" class="word-target"></div>
+                <input type="text" id="heal-input" placeholder="ketik..." autocomplete="off">
+            </div>
         </div>
+
+        <div style="margin-top: 20px;">
+            Skor: <span id="score-val">0</span>
+        </div>
+        <button id="btn-menu" style="display:none; margin-top:15px;" onclick="location.reload()">MENU UTAMA</button>
     </div>
 </div>
 
 <script>
-    let currentPlayer = "";
+    let player = { name: "", hp: 100, maxHp: 100 };
+    let enemy = { hp: 100, maxHp: 100 };
     let score = 0;
-    let playerHp = 100;
-    let enemyHp = 100;
-    let gameActive = false;
-    let currentWord = "";
-    let enemyTimer;
+    let isActive = false;
+    let enemyActionTimer;
 
-    const words = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember', 'kilat', 'sihir', 'ksatria', 'hutan', 'api', 'legenda', 'pahlawan', 'naga', 'pedang', 'perisai', 'mantra'];
+    // Kata-kata yang lebih kompleks
+    const complexWords = [
+        'transformasi', 'implementasi', 'sinkronisasi', 'akomodasi', 'karakteristik', 
+        'spesialisasi', 'dokumentasi', 'fundamental', 'interpretasi', 'konvensional',
+        'metamorfosis', 'revolusioner', 'kategorisasi', 'infrastruktur', 'multidimensional',
+        'standardisasi', 'dekonstruksi', 'probabilitas', 'signifikansi', 'akreditasi'
+    ];
 
-    // Load Highscores saat aplikasi dibuka
-    window.onload = displayHighscores;
+    window.onload = loadLeaderboard;
 
-    function enterGame() {
-        const nameInput = document.getElementById('username-input');
-        if (nameInput.value.trim() === "") {
-            alert("Masukkan namamu dulu!");
-            return;
-        }
-        currentPlayer = nameInput.value.trim();
-        document.getElementById('display-name').innerText = currentPlayer.toUpperCase();
+    function startGame() {
+        const name = document.getElementById('name-input').value;
+        if(!name) return alert("Isi namamu!");
+        
+        player.name = name;
+        document.getElementById('p-name').innerText = name.toUpperCase();
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('game-screen').style.display = 'block';
-        startBattle();
-    }
-
-    function startBattle() {
-        score = 0;
-        playerHp = 100;
-        enemyHp = 100;
-        gameActive = true;
-        document.getElementById('current-score').innerText = score;
-        document.getElementById('restart-btn').style.display = 'none';
-        document.getElementById('typing-input').disabled = false;
-        document.getElementById('typing-input').value = "";
-        document.getElementById('typing-input').focus();
-        updateHpUI();
-        spawnWord();
         
-        // Musuh menyerang otomatis jika pemain lambat
-        if(enemyTimer) clearInterval(enemyTimer);
-        enemyTimer = setInterval(enemyAttack, 3500); 
+        initBattle();
     }
 
-    function spawnWord() {
-        currentWord = words[Math.floor(Math.random() * words.length)];
-        document.getElementById('word-display').innerText = currentWord;
+    function initBattle() {
+        player.hp = 100;
+        enemy.hp = 100;
+        score = 0;
+        isActive = true;
+        updateUI();
+        refreshWords();
+        
+        document.getElementById('atk-input').focus();
+        
+        // Musuh bertindak setiap 4 detik
+        if(enemyActionTimer) clearInterval(enemyActionTimer);
+        enemyActionTimer = setInterval(enemyTurn, 4000);
     }
 
-    function enemyAttack() {
-        if (!gameActive) return;
-        playerHp -= 12;
-        showMsg("Musuh menyerang! -12 HP", "#e74c3c");
-        updateHpUI();
-        checkStatus();
+    function refreshWords() {
+        document.getElementById('atk-word').innerText = complexWords[Math.floor(Math.random()*complexWords.length)];
+        document.getElementById('heal-word').innerText = complexWords[Math.floor(Math.random()*complexWords.length)];
     }
 
-    document.getElementById('typing-input').addEventListener('input', (e) => {
-        if (!gameActive) return;
-        if (e.target.value.toLowerCase() === currentWord) {
-            score += 10;
-            enemyHp -= 20;
-            document.getElementById('current-score').innerText = score;
-            e.target.value = "";
-            showMsg("Serangan saktimu kena! -20 HP", "#2ecc71");
-            updateHpUI();
-            checkStatus();
-            if (gameActive) spawnWord();
+    // Input Serang
+    document.getElementById('atk-input').addEventListener('input', function(e) {
+        if(!isActive) return;
+        if(e.target.value.toLowerCase() === document.getElementById('atk-word').innerText) {
+            let dmg = 20;
+            enemy.hp -= dmg;
+            score += 15;
+            logAction(`Kamu menyerang! Musuh -${dmg} HP`);
+            finalizeTurn(e.target);
         }
     });
 
-    function updateHpUI() {
-        document.getElementById('player-hp').style.width = Math.max(0, playerHp) + "%";
-        document.getElementById('enemy-hp').style.width = Math.max(0, enemyHp) + "%";
+    // Input Heal
+    document.getElementById('heal-input').addEventListener('input', function(e) {
+        if(!isActive) return;
+        if(e.target.value.toLowerCase() === document.getElementById('heal-word').innerText) {
+            let heal = 15;
+            player.hp = Math.min(player.maxHp, player.hp + heal);
+            logAction(`Kamu menggunakan ramuan! +${heal} HP`);
+            finalizeTurn(e.target);
+        }
+    });
+
+    function finalizeTurn(inputEl) {
+        inputEl.value = "";
+        refreshWords();
+        updateUI();
+        checkDeath();
     }
 
-    function showMsg(txt, color) {
-        const msgEl = document.getElementById('game-msg');
-        msgEl.innerText = txt;
-        msgEl.style.color = color;
+    function enemyTurn() {
+        if(!isActive) return;
+
+        // Logika AI Musuh: Jika HP musuh < 40%, ada peluang 50% dia heal
+        if(enemy.hp < 40 && Math.random() > 0.5) {
+            let heal = 10;
+            enemy.hp = Math.min(enemy.maxHp, enemy.hp + heal);
+            logAction("Musuh merapal mantra pemulih! +10 HP");
+        } else {
+            let dmg = 12;
+            player.hp -= dmg;
+            logAction(`Musuh menyerangmu! -${dmg} HP`);
+        }
+        updateUI();
+        checkDeath();
     }
 
-    function checkStatus() {
-        if (enemyHp <= 0) {
-            endGame("MENANG! Musuh tumbang.");
-        } else if (playerHp <= 0) {
-            endGame("KALAH! Kamu kelelahan.");
+    function updateUI() {
+        document.getElementById('p-hp-fill').style.width = player.hp + "%";
+        document.getElementById('e-hp-fill').style.width = enemy.hp + "%";
+        document.getElementById('p-hp-text').innerText = `${Math.max(0, player.hp)}/${player.maxHp}`;
+        document.getElementById('e-hp-text').innerText = `${Math.max(0, enemy.hp)}/${enemy.maxHp}`;
+        document.getElementById('score-val').innerText = score;
+    }
+
+    function logAction(msg) {
+        document.getElementById('battle-log').innerText = msg;
+    }
+
+    function checkDeath() {
+        if(enemy.hp <= 0) {
+            isActive = false;
+            clearInterval(enemyActionTimer);
+            logAction("VICTORY! Musuh telah musnah.");
+            saveScore();
+            endGame();
+        } else if(player.hp <= 0) {
+            isActive = false;
+            clearInterval(enemyActionTimer);
+            logAction("DEFEAT... Kamu tumbang di medan perang.");
+            saveScore();
+            endGame();
         }
     }
 
-    function endGame(finalMsg) {
-        gameActive = false;
-        clearInterval(enemyTimer);
-        document.getElementById('typing-input').disabled = true;
-        document.getElementById('word-display').innerText = "SELESAI";
-        showMsg(finalMsg, "#f1c40f");
-        document.getElementById('restart-btn').style.display = 'inline-block';
-        saveScore(currentPlayer, score);
+    function endGame() {
+        document.getElementById('atk-input').disabled = true;
+        document.getElementById('heal-input').disabled = true;
+        document.getElementById('btn-menu').style.display = 'inline-block';
     }
 
-    function saveScore(name, score) {
-        let scores = JSON.parse(localStorage.getItem('typingHighscores')) || [];
-        scores.push({ name: name, score: score });
-        // Urutkan dari yang terbesar
-        scores.sort((a, b) => b.score - a.score);
-        // Simpan 5 terbaik saja
-        scores = scores.slice(0, 5);
-        localStorage.setItem('typingHighscores', JSON.stringify(scores));
-        displayHighscores();
+    function saveScore() {
+        let scores = JSON.parse(localStorage.getItem('spellscript_scores')) || [];
+        scores.push({name: player.name, score: score});
+        scores.sort((a,b) => b.score - a.score);
+        localStorage.setItem('spellscript_scores', JSON.stringify(scores.slice(0, 5)));
     }
 
-    function displayHighscores() {
-        const scores = JSON.parse(localStorage.getItem('typingHighscores')) || [];
-        const container = document.getElementById('scores-content');
-        if (scores.length === 0) {
-            container.innerHTML = "<center>Belum ada rekor.</center>";
-            return;
-        }
-        container.innerHTML = scores.map((s, index) => 
-            `<div style="display:flex; justify-content:space-between; margin: 3px 0;">
-                <span>${index + 1}. ${s.name}</span>
-                <span><b>${s.score}</b></span>
-            </div>`
-        ).join('');
-    }
-
-    function resetToMenu() {
-        document.getElementById('game-screen').style.display = 'none';
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('username-input').value = "";
+    function loadLeaderboard() {
+        let scores = JSON.parse(localStorage.getItem('spellscript_scores')) || [];
+        let html = "<b>TOP 5 KSATRIA:</b><br>";
+        scores.forEach((s, i) => {
+            html += `${i+1}. ${s.name} - ${s.score}<br>`;
+        });
+        document.getElementById('highscore-view').innerHTML = html;
     }
 </script>
 
