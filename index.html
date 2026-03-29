@@ -6,202 +6,307 @@
     <title>Spellscript - Typing Battle</title>
     <style>
         body {
-            background-color: #1a1a1a;
-            color: #e0d8c3;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #121212;
+            color: #d4c4a8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
 
         #game-container {
             text-align: center;
-            background: #2b2b2b;
-            padding: 30px;
-            border: 4px solid #4a3f35;
-            border-radius: 10px;
-            width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: linear-gradient(145deg, #1e1e1e, #252525);
+            padding: 40px;
+            border: 2px solid #3d3d3d;
+            border-radius: 15px;
+            width: 450px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        /* Layar Input Nama */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Layar Utama Game */
+        #game-screen {
+            display: none;
         }
 
         .battle-area {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 20px 0;
-            border-bottom: 2px solid #4a3f35;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
         }
 
-        .character {
-            font-size: 50px;
+        .character-box {
+            width: 100px;
+        }
+
+        .char-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
         }
 
         .hp-bar {
             width: 100%;
-            height: 10px;
-            background: #444;
-            margin-top: 5px;
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
         }
 
         .hp-fill {
             height: 100%;
-            background: #e74c3c;
+            background: #c0392b;
             width: 100%;
-            transition: width 0.3s;
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         #word-display {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
-            letter-spacing: 2px;
-            margin: 20px 0;
+            letter-spacing: 3px;
+            margin: 30px 0;
             color: #f1c40f;
-            text-shadow: 2px 2px #000;
+            text-transform: lowercase;
         }
 
-        input[type="text"] {
-            width: 80%;
-            padding: 10px;
+        input {
+            width: 90%;
+            padding: 12px;
             font-size: 18px;
-            background: #3d3d3d;
-            border: 2px solid #4a3f35;
-            color: white;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            color: #fff;
             text-align: center;
+            border-radius: 5px;
             outline: none;
         }
 
-        .stats {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #888;
+        input:focus {
+            border-color: #f1c40f;
         }
 
-        #message {
-            margin-top: 10px;
+        button {
+            padding: 12px 25px;
+            background: #4a3f35;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #635548;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        #highscore-list {
+            margin-top: 15px;
+            text-align: left;
+            font-size: 12px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+        }
+
+        .msg-pop {
             height: 20px;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div class="battle-area">
-        <div id="player-side">
-            <div class="character">⚔️</div>
-            <div style="font-size: 12px;">PLAYER</div>
-            <div class="hp-bar"><div id="player-hp" class="hp-fill"></div></div>
-        </div>
-        <div id="enemy-side">
-            <div class="character">👹</div>
-            <div style="font-size: 12px;">ENEMY</div>
-            <div class="hp-bar"><div id="enemy-hp" class="hp-fill"></div></div>
+    <div id="login-screen">
+        <h2 style="color: #f1c40f;">SPELLSCRIPT</h2>
+        <p>Masukkan namamu untuk memulai duel:</p>
+        <input type="text" id="username-input" placeholder="Nama Ksatria..." maxlength="12">
+        <button onclick="enterGame()">MASUK</button>
+        <div id="highscore-list">
+            <center><b>Papan Peringkat Teratas:</b></center>
+            <div id="scores-content" style="margin-top: 5px;"></div>
         </div>
     </div>
 
-    <div id="word-display">Tekan Start!</div>
-    <input type="text" id="input-word" placeholder="Ketik di sini..." disabled>
-    
-    <div id="message"></div>
-    
-    <button id="start-btn" style="margin-top: 20px; padding: 10px 20px; cursor: pointer;">Mulai Game</button>
+    <div id="game-screen">
+        <div class="battle-area">
+            <div class="character-box">
+                <div class="char-icon">🛡️</div>
+                <div id="display-name" style="font-size: 10px; margin-bottom: 5px;">PLAYER</div>
+                <div class="hp-bar"><div id="player-hp" class="hp-fill"></div></div>
+            </div>
+            <div style="align-self: center; font-style: italic; color: #555;">VS</div>
+            <div class="character-box">
+                <div class="char-icon">🐉</div>
+                <div style="font-size: 10px; margin-bottom: 5px;">BOSS</div>
+                <div class="hp-bar"><div id="enemy-hp" class="hp-fill"></div></div>
+            </div>
+        </div>
 
-    <div class="stats">
-        Skor: <span id="score">0</span>
+        <div class="msg-pop" id="game-msg"></div>
+        <div id="word-display">siap?</div>
+        <input type="text" id="typing-input" placeholder="ketik di sini..." autocomplete="off">
+        
+        <div class="stats-row">
+            <div>SKOR: <span id="current-score">0</span></div>
+            <button id="restart-btn" style="display:none; padding: 5px 10px;" onclick="resetToMenu()">MENU</button>
+        </div>
     </div>
 </div>
 
 <script>
-    const wordDisplay = document.getElementById('word-display');
-    const inputWord = document.getElementById('input-word');
-    const startBtn = document.getElementById('start-btn');
-    const scoreDisplay = document.getElementById('score');
-    const enemyHpBar = document.getElementById('enemy-hp');
-    const playerHpBar = document.getElementById('player-hp');
-    const message = document.getElementById('message');
-
-    const words = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember', 'pedang', 'sihir', 'ksatria', 'naga', 'istana', 'hutan'];
-    
+    let currentPlayer = "";
     let score = 0;
-    let enemyHp = 100;
     let playerHp = 100;
-    let currentWord = '';
+    let enemyHp = 100;
     let gameActive = false;
-    let enemyInterval;
+    let currentWord = "";
+    let enemyTimer;
 
-    function startGame() {
-        score = 0;
-        enemyHp = 100;
-        playerHp = 100;
-        gameActive = true;
-        scoreDisplay.innerText = score;
-        updateHpBars();
-        inputWord.disabled = false;
-        inputWord.value = '';
-        inputWord.focus();
-        startBtn.style.display = 'none';
-        message.innerText = '';
-        nextWord();
-        
-        // Musuh menyerang setiap 3 detik jika kita tidak mengetik
-        enemyInterval = setInterval(enemyAttack, 3000);
+    const words = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember', 'kilat', 'sihir', 'ksatria', 'hutan', 'api', 'legenda', 'pahlawan', 'naga', 'pedang', 'perisai', 'mantra'];
+
+    // Load Highscores saat aplikasi dibuka
+    window.onload = displayHighscores;
+
+    function enterGame() {
+        const nameInput = document.getElementById('username-input');
+        if (nameInput.value.trim() === "") {
+            alert("Masukkan namamu dulu!");
+            return;
+        }
+        currentPlayer = nameInput.value.trim();
+        document.getElementById('display-name').innerText = currentPlayer.toUpperCase();
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'block';
+        startBattle();
     }
 
-    function nextWord() {
-        const randomIndex = Math.floor(Math.random() * words.length);
-        currentWord = words[randomIndex];
-        wordDisplay.innerText = currentWord;
+    function startBattle() {
+        score = 0;
+        playerHp = 100;
+        enemyHp = 100;
+        gameActive = true;
+        document.getElementById('current-score').innerText = score;
+        document.getElementById('restart-btn').style.display = 'none';
+        document.getElementById('typing-input').disabled = false;
+        document.getElementById('typing-input').value = "";
+        document.getElementById('typing-input').focus();
+        updateHpUI();
+        spawnWord();
+        
+        // Musuh menyerang otomatis jika pemain lambat
+        if(enemyTimer) clearInterval(enemyTimer);
+        enemyTimer = setInterval(enemyAttack, 3500); 
+    }
+
+    function spawnWord() {
+        currentWord = words[Math.floor(Math.random() * words.length)];
+        document.getElementById('word-display').innerText = currentWord;
     }
 
     function enemyAttack() {
         if (!gameActive) return;
-        playerHp -= 10;
-        updateHpBars();
-        message.innerText = 'Musuh menyerang! -10 HP';
-        message.style.color = '#e74c3c';
-        checkGameOver();
+        playerHp -= 12;
+        showMsg("Musuh menyerang! -12 HP", "#e74c3c");
+        updateHpUI();
+        checkStatus();
     }
 
-    inputWord.addEventListener('input', () => {
-        if (inputWord.value.toLowerCase() === currentWord) {
+    document.getElementById('typing-input').addEventListener('input', (e) => {
+        if (!gameActive) return;
+        if (e.target.value.toLowerCase() === currentWord) {
             score += 10;
-            enemyHp -= 15;
-            scoreDisplay.innerText = score;
-            inputWord.value = '';
-            message.innerText = 'Serangan berhasil!';
-            message.style.color = '#2ecc71';
-            updateHpBars();
-            checkGameOver();
-            if (gameActive) nextWord();
+            enemyHp -= 20;
+            document.getElementById('current-score').innerText = score;
+            e.target.value = "";
+            showMsg("Serangan saktimu kena! -20 HP", "#2ecc71");
+            updateHpUI();
+            checkStatus();
+            if (gameActive) spawnWord();
         }
     });
 
-    function updateHpBars() {
-        enemyHpBar.style.width = enemyHp + '%';
-        playerHpBar.style.width = playerHp + '%';
+    function updateHpUI() {
+        document.getElementById('player-hp').style.width = Math.max(0, playerHp) + "%";
+        document.getElementById('enemy-hp').style.width = Math.max(0, enemyHp) + "%";
     }
 
-    function checkGameOver() {
+    function showMsg(txt, color) {
+        const msgEl = document.getElementById('game-msg');
+        msgEl.innerText = txt;
+        msgEl.style.color = color;
+    }
+
+    function checkStatus() {
         if (enemyHp <= 0) {
-            endGame('MENANG! Musuh kalah.');
+            endGame("MENANG! Musuh tumbang.");
         } else if (playerHp <= 0) {
-            endGame('KALAH! HP kamu habis.');
+            endGame("KALAH! Kamu kelelahan.");
         }
     }
 
-    function endGame(msg) {
+    function endGame(finalMsg) {
         gameActive = false;
-        clearInterval(enemyInterval);
-        inputWord.disabled = true;
-        wordDisplay.innerText = 'Game Over';
-        message.innerText = msg;
-        startBtn.style.display = 'inline-block';
-        startBtn.innerText = 'Main Lagi';
+        clearInterval(enemyTimer);
+        document.getElementById('typing-input').disabled = true;
+        document.getElementById('word-display').innerText = "SELESAI";
+        showMsg(finalMsg, "#f1c40f");
+        document.getElementById('restart-btn').style.display = 'inline-block';
+        saveScore(currentPlayer, score);
     }
 
-    startBtn.addEventListener('click', startGame);
+    function saveScore(name, score) {
+        let scores = JSON.parse(localStorage.getItem('typingHighscores')) || [];
+        scores.push({ name: name, score: score });
+        // Urutkan dari yang terbesar
+        scores.sort((a, b) => b.score - a.score);
+        // Simpan 5 terbaik saja
+        scores = scores.slice(0, 5);
+        localStorage.setItem('typingHighscores', JSON.stringify(scores));
+        displayHighscores();
+    }
+
+    function displayHighscores() {
+        const scores = JSON.parse(localStorage.getItem('typingHighscores')) || [];
+        const container = document.getElementById('scores-content');
+        if (scores.length === 0) {
+            container.innerHTML = "<center>Belum ada rekor.</center>";
+            return;
+        }
+        container.innerHTML = scores.map((s, index) => 
+            `<div style="display:flex; justify-content:space-between; margin: 3px 0;">
+                <span>${index + 1}. ${s.name}</span>
+                <span><b>${s.score}</b></span>
+            </div>`
+        ).join('');
+    }
+
+    function resetToMenu() {
+        document.getElementById('game-screen').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('username-input').value = "";
+    }
 </script>
 
 </body>
