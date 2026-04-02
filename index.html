@@ -39,12 +39,46 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             text-align: center;
             backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Leaderboard Pojok Kanan Atas */
+        #leaderboard-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(20, 20, 20, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #444;
+            width: 180px;
+            font-size: 11px;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+
+        .leader-title {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+
+        .leader-entry {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+            opacity: 0.8;
         }
 
         h1 { color: var(--primary); letter-spacing: 8px; margin-bottom: 10px; }
         
         .menu-group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; margin-bottom: 8px; opacity: 0.7; }
+        label { display: block; font-size: 11px; margin-bottom: 8px; opacity: 0.7; }
 
         input, select {
             width: 80%;
@@ -68,7 +102,7 @@
             transition: 0.3s;
         }
 
-        button:hover { background: var(--primary); color: #000; }
+        button:hover { background: var(--primary); color: #000; transform: translateY(-2px); }
 
         /* Battle UI */
         .battle-view { display: flex; justify-content: space-around; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
@@ -76,11 +110,17 @@
         .hp-fill { height: 100%; transition: width 0.4s ease; }
         .action-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .spell-box { background: #222; padding: 15px; border-radius: 12px; border: 1px solid #333; }
-        .word-target { font-size: 16px; font-weight: bold; color: var(--primary); margin: 10px 0; min-height: 20px; font-family: monospace; }
-        .log { font-size: 13px; height: 40px; color: #888; font-style: italic; }
+        .word-target { font-size: 15px; font-weight: bold; color: var(--primary); margin: 10px 0; min-height: 20px; font-family: monospace; }
+        .log { font-size: 12px; height: 35px; color: #888; font-style: italic; }
     </style>
 </head>
 <body>
+
+<div id="leaderboard-overlay">
+    <div class="leader-title">TOP KSATRIA</div>
+    <div id="leader-list">
+        </div>
+</div>
 
 <div id="game-container">
     <div id="login-screen">
@@ -91,50 +131,52 @@
         </div>
         
         <div class="menu-group">
-            <label>PILIH TINGKAT KESULITAN</label>
+            <label>TINGKAT KESULITAN (WORD BANK)</label>
             <select id="level-select">
-                <option value="easy">LEVEL 1 - 2 (Mudah)</option>
-                <option value="hard">LEVEL 3 (Sulit)</option>
+                <option value="easy">LEVEL 1 - 2 (Arcane & Elements)</option>
+                <option value="hard">LEVEL 3 (Emotion & Fortitude)</option>
             </select>
         </div>
 
         <button onclick="startGame()">MASUK ARENA</button>
-        <div id="highscore-view" style="margin-top: 20px; font-size: 12px; color: #666;"></div>
     </div>
 
     <div id="game-screen" style="display: none;">
         <div class="battle-view">
             <div>
-                <div id="p-name" style="font-weight: bold;">PLAYER</div>
-                <div class="hp-bar"><div id="p-hp-fill" class="hp-fill" style="background: var(--success); width: 100%;"></div></div>
+                <div id="p-name" style="font-weight: bold; font-size: 14px;">PLAYER</div>
+                <div class="hp-bar" style="width: 150px;"><div id="p-hp-fill" class="hp-fill" style="background: var(--success); width: 100%;"></div></div>
             </div>
-            <div style="align-self: center;">VS</div>
+            <div style="align-self: center; font-weight: bold; opacity: 0.5;">VS</div>
             <div>
-                <div style="font-weight: bold; color: var(--danger);">ARCH-WIZARD</div>
-                <div class="hp-bar"><div id="e-hp-fill" class="hp-fill" style="background: var(--danger); width: 100%;"></div></div>
+                <div style="font-weight: bold; color: var(--danger); font-size: 14px;">ARCH-WIZARD</div>
+                <div class="hp-bar" style="width: 150px;"><div id="e-hp-fill" class="hp-fill" style="background: var(--danger); width: 100%;"></div></div>
             </div>
         </div>
 
-        <div id="battle-log" class="log">Bersiaplah...</div>
+        <div id="battle-log" class="log">Gunakan mantramu...</div>
 
         <div class="action-zone">
             <div class="spell-box">
-                <div style="font-size: 10px;">SERANGAN</div>
+                <div style="font-size: 10px; opacity: 0.6;">SERANGAN</div>
                 <div id="atk-word" class="word-target"></div>
                 <input type="text" id="atk-input" placeholder="ketik..." autocomplete="off">
             </div>
             <div class="spell-box">
-                <div style="font-size: 10px;">PEMULIHAN</div>
+                <div style="font-size: 10px; opacity: 0.6;">PEMULIHAN</div>
                 <div id="heal-word" class="word-target"></div>
                 <input type="text" id="heal-input" placeholder="ketik..." autocomplete="off">
             </div>
         </div>
-        <div style="margin-top: 20px;">SKOR: <span id="score-val">0</span></div>
+        
+        <div style="margin-top: 25px; font-size: 14px;">
+            SKOR SAAT INI: <span id="score-val" style="color: var(--primary); font-weight: bold;">0</span>
+        </div>
     </div>
 </div>
 
 <script>
-    // Database Kata sesuai gambar
+    // Data kata sesuai gambar yang diunggah
     const wordBank = {
         easy: [
             'Ashes', 'Phoenix', 'Flame', 'Cinder', 'Spark', 'Fireball', 'Thunderclap', 'Rumbling', 'Static', 'Voltage',
@@ -148,20 +190,43 @@
         ]
     };
 
+    // Data Leaderboard Fiktif
+    const dummyLeaders = [
+        { name: "Salma", score: 850 },
+        { name: "Tasya", score: 720 },
+        { name: "Kaye", score: 640 },
+        { name: "Arkan", score: 510 },
+        { name: "Zack", score: 430 }
+    ];
+
     let currentGameWords = [];
     let player = { name: "", hp: 100 };
     let enemy = { hp: 100 };
     let score = 0;
     let isActive = false;
 
+    window.onload = () => {
+        renderLeaderboard();
+    };
+
+    function renderLeaderboard() {
+        const list = document.getElementById('leader-list');
+        list.innerHTML = dummyLeaders.map((l, i) => `
+            <div class="leader-entry">
+                <span>${i+1}. ${l.name}</span>
+                <span style="color: var(--primary)">${l.score}</span>
+            </div>
+        `).join('');
+    }
+
     function startGame() {
         const name = document.getElementById('name-input').value;
         const level = document.getElementById('level-select').value;
         
-        if(!name) return alert("Masukkan nama!");
+        if(!name) return alert("Siapa namamu, Ksatria?");
 
         player.name = name;
-        currentGameWords = wordBank[level]; // Ambil kata sesuai level yang dipilih
+        currentGameWords = wordBank[level];
         
         document.getElementById('p-name').innerText = name.toUpperCase();
         document.getElementById('login-screen').style.display = 'none';
@@ -173,14 +238,16 @@
     function initBattle() {
         isActive = true;
         refreshWords();
-        // Musuh menyerang tiap 4 detik
+        document.getElementById('atk-input').focus();
+        
+        // Musuh menyerang otomatis
         setInterval(() => {
             if(isActive) {
-                player.hp -= 10;
+                player.hp -= 8;
                 updateUI();
                 checkDeath();
             }
-        }, 4000);
+        }, 4500);
     }
 
     function refreshWords() {
@@ -188,11 +255,11 @@
         document.getElementById('heal-word').innerText = currentGameWords[Math.floor(Math.random() * currentGameWords.length)];
     }
 
-    // Input handling
     document.getElementById('atk-input').addEventListener('input', function(e) {
+        if(!isActive) return;
         if(e.target.value.toLowerCase() === document.getElementById('atk-word').innerText.toLowerCase()) {
             enemy.hp -= 20;
-            score += 10;
+            score += 15;
             e.target.value = "";
             refreshWords();
             updateUI();
@@ -201,8 +268,9 @@
     });
 
     document.getElementById('heal-input').addEventListener('input', function(e) {
+        if(!isActive) return;
         if(e.target.value.toLowerCase() === document.getElementById('heal-word').innerText.toLowerCase()) {
-            player.hp = Math.min(100, player.hp + 15);
+            player.hp = Math.min(100, player.hp + 12);
             e.target.value = "";
             refreshWords();
             updateUI();
@@ -217,10 +285,12 @@
 
     function checkDeath() {
         if(enemy.hp <= 0) {
-            alert("KEMENANGAN!");
+            isActive = false;
+            alert("KEMENANGAN TELAK! Skor Akhir: " + score);
             location.reload();
         } else if(player.hp <= 0) {
-            alert("KAMU GUGUR!");
+            isActive = false;
+            alert("KEKALAHAN... Coba lagi lain kali.");
             location.reload();
         }
     }
