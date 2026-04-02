@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpellScript - Battle Typing</title>
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Almendra:wght@700&display=swap" rel="stylesheet">
-    
+    <title>SpellScript Layout</title>
     <style>
         * {
             margin: 0;
@@ -14,277 +12,185 @@
         }
 
         body {
-            background-color: #1a1a1a;
+            background-color: #222;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'MedievalSharp', cursive;
-            color: #333;
+            font-family: sans-serif;
         }
 
-        /* Container Utama sesuai Mockup */
-        .game-wrapper {
-            width: 100%;
-            max-width: 420px;
-            height: 750px;
-            background-color: #7a766a; 
-            border: 10px solid #222;
-            border-radius: 15px;
+        /* Container HP Mockup */
+        .phone-container {
+            width: 360px;
+            height: 640px;
+            background-color: #7a766a; /* Warna dasar mockup */
+            border: 8px solid #000;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* Header Logo & Brand */
+        /* Header (Tetap di atas) */
         .game-header {
-            background-color: #e0e0e0;
-            padding: 12px 15px;
+            height: 60px;
+            background: #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #333;
+            padding: 0 15px;
+            z-index: 10;
         }
 
-        .logos {
-            display: flex;
-            gap: 8px;
-        }
+        .header-logos { display: flex; gap: 5px; }
+        .logo-img { width: 35px; height: 25px; object-fit: contain; background: #ccc; }
+        .polar-logo { width: 60px; height: 20px; object-fit: contain; }
 
-        .logo-box {
-            width: 35px;
-            height: 22px;
-            background: #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 7px;
-            color: white;
-            border-radius: 2px;
-        }
-
-        .brand-name {
-            color: #00008b;
-            font-weight: 900;
-            font-family: 'Arial', sans-serif;
-            letter-spacing: 1px;
-            font-size: 14px;
-        }
-
-        /* Arena Game */
-        .game-arena {
-            flex: 1;
-            display: flex;
+        /* Halaman */
+        .page {
+            display: none;
             flex-direction: column;
             align-items: center;
+            height: 100%;
             position: relative;
-            padding-top: 30px;
         }
 
-        .main-title {
-            font-family: 'Almendra', serif;
-            font-size: 3.5rem;
-            color: #d4c59a;
-            text-shadow: 4px 4px 0px #222;
-            margin-bottom: 30px;
+        .active { display: flex; }
+
+        /* Page 1: Home */
+        .title-img {
+            width: 80%;
+            margin-top: 40px;
+            object-fit: contain;
+        }
+
+        .input-area {
+            margin-top: 20px;
+            text-align: center;
             z-index: 5;
         }
 
-        /* Input & UI Box */
-        .ui-panel {
-            z-index: 10;
-            text-align: center;
+        .input-field {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 180px;
+            margin-bottom: 10px;
         }
 
-        .input-box {
-            background: #f0f0f0;
-            border: 3px solid #fff;
-            border-radius: 10px;
-            padding: 12px;
-            width: 220px;
-            font-family: 'MedievalSharp', cursive;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            outline: none;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn-action {
-            background: #fff;
-            border: 2px solid #000;
-            padding: 8px 30px;
-            font-family: 'MedievalSharp', cursive;
-            font-size: 1.1rem;
+        .btn-start {
+            padding: 8px 25px;
             cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        .btn-action:active {
-            transform: scale(0.95);
-        }
-
-        .current-spell {
             background: #fff;
-            padding: 10px 40px;
-            border-radius: 8px;
-            font-size: 1.5rem;
-            margin-top: 20px;
-            display: none; /* Muncul saat mulai */
+            border: 1px solid #000;
         }
 
-        /* Characters Section */
-        .battle-stage {
+        /* Page 2: Battle */
+        .spell-img {
+            width: 150px;
+            margin-top: 40px;
+            object-fit: contain;
+        }
+
+        .battle-arena {
             width: 100%;
             display: flex;
             justify-content: space-around;
             align-items: flex-end;
-            padding: 0 20px;
             margin-top: auto;
-            margin-bottom: 100px; /* Jarak dari lantai */
+            margin-bottom: 100px;
+            padding: 0 20px;
             z-index: 5;
         }
 
-        .hero {
-            width: 110px;
-            height: 160px;
-            background: #2a2a2a;
-            clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
-        }
-
-        .boss {
-            width: 130px;
-            height: 200px;
-            background: #b89c4d;
-            clip-path: polygon(50% 0%, 90% 20%, 100% 50%, 90% 80%, 50% 100%, 10% 80%, 0% 50%, 10% 20%);
-        }
+        .char-img { height: 140px; object-fit: contain; }
 
         /* Health Bar */
-        .health-ui {
+        .hp-container {
             position: absolute;
-            bottom: 130px;
+            bottom: 120px;
             left: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
-            z-index: 10;
+            z-index: 5;
         }
 
-        .heart {
-            font-size: 24px;
-            filter: drop-shadow(2px 2px 0 #000);
-        }
+        .heart-icon { width: 25px; }
+        .hp-bar { width: 120px; height: 12px; background: #333; border: 1px solid #000; }
+        .hp-fill { width: 70%; height: 100%; background: #7ca667; }
 
-        .bar-bg {
-            width: 150px;
-            height: 18px;
-            background: #333;
-            border: 2px solid #000;
-        }
-
-        .bar-fill {
-            width: 75%;
-            height: 100%;
-            background: #7ca667;
-        }
-
-        /* Lantai / Floor */
-        .floor {
+        /* Lantai & Background */
+        .floor-img {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 120px;
-            background-color: #2c2c2c;
-            background-image: 
-                linear-gradient(rgba(0,0,0,0.3) 2px, transparent 2px),
-                linear-gradient(90deg, rgba(0,0,0,0.3) 2px, transparent 2px);
-            background-size: 25px 25px;
-            border-top: 5px solid #111;
+            height: 100px;
+            object-fit: cover;
         }
 
-        /* Keyboard Mockup */
-        .keyboard-mockup {
-            background: #bdbebd;
-            padding: 8px 4px;
-            border-top: 1px solid #999;
-        }
-
-        .key-row {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            margin-bottom: 4px;
-        }
-
-        .key {
-            background: #fff;
-            color: #444;
-            padding: 6px 0;
-            width: 32px;
-            text-align: center;
-            border-radius: 4px;
-            font-size: 12px;
-            font-family: sans-serif;
-            box-shadow: 0 2px 0 #888;
+        /* Keyboard (Hanya di Page 2) */
+        .keyboard-img {
+            width: 100%;
+            height: auto;
+            background: #999;
         }
     </style>
 </head>
 <body>
 
-    <div class="game-wrapper">
+    <div class="phone-container">
         <header class="game-header">
-            <div class="logos">
-                <div class="logo-box">UNIV</div>
-                <div class="logo-box">PROD</div>
+            <div class="header-logos">
+                <img src="logo1.png" alt="Logo 1" class="logo-img">
+                <img src="logo2.png" alt="Logo 2" class="logo-img">
             </div>
-            <div class="brand-name">🐾 POLAR</div>
+            <img src="polar.png" alt="POLAR" class="polar-logo">
         </header>
 
-        <main class="game-arena">
-            <h1 class="main-title">SpellScript</h1>
-
-            <div class="ui-panel" id="start-menu">
-                <input type="text" placeholder="Name..." class="input-box">
+        <div id="page-home" class="page active">
+            <img src="judul_spellscript.png" alt="SpellScript Title" class="title-img">
+            
+            <div class="input-area">
+                <input type="text" placeholder="Name..." class="input-field">
                 <br>
-                <button class="btn-action" onclick="startGame()">start</button>
+                <button class="btn-start" onclick="goToPage('page-battle')">start</button>
             </div>
 
-            <div class="current-spell" id="spell-display">Leviosa</div>
+            <img src="char_hero_idle.png" alt="Hero" class="char-img" style="position: absolute; bottom: 80px;">
+            <img src="lantai.png" alt="Lantai" class="floor-img">
+        </div>
 
-            <div class="battle-stage">
-                <div class="hero"></div>
-                <div class="boss"></div>
+        <div id="page-battle" class="page">
+            <img src="mantra_leviosa.png" alt="Leviosa" class="spell-img">
+
+            <div class="battle-arena">
+                <img src="hero_battle.png" alt="Hero" class="char-img">
+                <img src="enemy_boss.png" alt="Boss" class="char-img">
             </div>
 
-            <div class="health-ui">
-                <div class="heart">❤️</div>
-                <div class="bar-bg">
-                    <div class="bar-fill"></div>
+            <div class="hp-container">
+                <img src="heart.png" alt="HP" class="heart-icon">
+                <div class="hp-bar">
+                    <div class="hp-fill"></div>
                 </div>
             </div>
 
-            <div class="floor"></div>
-        </main>
-
-        <footer class="keyboard-mockup">
-            <div class="key-row">
-                <div class="key">Q</div><div class="key">W</div><div class="key">E</div><div class="key">R</div><div class="key">T</div>
-                <div class="key">Y</div><div class="key">U</div><div class="key">I</div><div class="key">O</div><div class="key">P</div>
+            <img src="lantai.png" alt="Lantai" class="floor-img" style="bottom: 160px;">
+            
+            <div style="margin-top: auto; width: 100%;">
+                <img src="keyboard.png" alt="Keyboard" class="keyboard-img">
             </div>
-            <div class="key-row">
-                <div class="key">A</div><div class="key">S</div><div class="key">D</div><div class="key">F</div><div class="key">G</div>
-                <div class="key">H</div><div class="key">J</div><div class="key">K</div><div class="key">L</div>
-            </div>
-        </footer home>
+        </div>
     </div>
 
     <script>
-        function startGame() {
-            document.getElementById('start-menu').style.display = 'none';
-            document.getElementById('spell-display').style.display = 'block';
-            // Di sini nanti bisa ditambah logic game-nya
-            console.log("Game Dimulai!");
+        function goToPage(pageId) {
+            // Sembunyikan semua page
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Tampilkan page yang dituju
+            document.getElementById(pageId).classList.add('active');
         }
     </script>
 </body>
