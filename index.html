@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spellscript: Arch-Wizard Duel</title>
+    <title>Spellscript: Classic RPG Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #f1c40f;
-            --magic-purple: #9b59b6;
-            --bg: #0a0a0c;
-            --card-bg: #141418;
-            --danger: #ff4757;
-            --success: #2ed573;
-            --text: #e0d4be;
-            --mana: #3498db;
+            --primary-gothic: #816246; /* Emas Tua untuk tombol */
+            --bg-page: #d4d4d4;       /* Abu-abu terang latar halaman */
+            --frame-border: #816246;  /* Warna bingkai frame */
+            --text-on-dark: #fff8e1;  /* Warna teks terang */
+            --text-dark: #3e2723;     /* Warna teks gelap */
+            --input-bg: #4e342e;      /* Warna input gelap */
+            --frame-width: 650px;     /* Lebar frame sesuai mockup */
+            --frame-height: 500px;    /* Tinggi frame */
+            --font-gothic: 'MedievalSharp', serif;
         }
 
         body {
-            background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(155, 89, 182, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
-            color: var(--text);
+            background-color: var(--bg-page);
+            color: var(--text-dark);
             font-family: 'Segoe UI', serif;
             display: flex;
             justify-content: center;
@@ -31,300 +32,335 @@
             overflow: hidden;
         }
 
-        canvas.stars {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        #game-container {
-            background: var(--card-bg);
-            padding: 40px;
-            border: 2px solid #2c2c34;
-            border-radius: 30px;
-            width: 600px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(155, 89, 182, 0.1);
-            text-align: center;
-            animation: fadeInUp 1s ease-out;
+        /* Container Frame Utama (seperti kotak game di gambar) */
+        #game-frame {
+            width: var(--frame-width);
+            height: var(--frame-height);
+            background-color: #212121; /* Warna fallback jika BG tidak muat */
+            border: 5px solid var(--frame-border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
             position: relative;
-            backdrop-filter: blur(10px);
         }
 
-        .ornament {
+        /* Viewport tempat background dan elemen game berada */
+        #game-viewport {
+            flex: 1; /* Mengisi sisa ruang frame */
+            position: relative;
+            padding: 20px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            
+            /* *** BAGIAN BACKGROUND KUSTOM *** */
+            /* Jika kamu punya gambar, tempelkan URL-nya di bawah ini: */
+            background-image: linear-gradient(to bottom, #101010, #301010); /* Fallback */
+            /* Contoh penggunaan: background-image: url('url_gambar_kamu_disini.png'); */
+            /* *** ------------------------ *** */
+        }
+
+        /* Kop surat placeholder di atas (seperti di mockup) */
+        #mockup-header-placeholder {
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 2px solid var(--frame-border);
             position: absolute;
-            font-size: 24px;
-            color: #333;
-            opacity: 0.5;
-        }
-        .top-left { top: 20px; left: 20px; }
-        .top-right { top: 20px; right: 20px; }
-        .bot-left { bottom: 20px; left: 20px; }
-        .bot-right { bottom: 20px; right: 20px; }
-
-        h1 {
-            color: var(--primary);
-            letter-spacing: 12px;
-            text-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
-            margin-bottom: 5px;
-            font-variant: small-caps;
-        }
-
-        .subtitle {
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
             font-size: 10px;
-            letter-spacing: 4px;
-            color: var(--magic-purple);
-            margin-bottom: 30px;
-            text-transform: uppercase;
+            opacity: 0.5; /* Pudar seperti mockup */
         }
 
-        input {
-            width: 85%;
-            padding: 14px;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid #444;
-            color: #fff;
+        /* Gaya Judul Utama (Spellscript di mockup) */
+        #game-title-screen h1 {
+            font-family: var(--font-gothic);
+            color: var(--frame-border);
+            font-size: 56px;
+            letter-spacing: 5px;
+            margin-bottom: 5px;
             text-align: center;
-            border-radius: 50px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Gaya Input Retro */
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            background-color: var(--input-bg);
+            border: 2px solid var(--frame-border);
+            color: var(--text-on-dark);
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
             font-size: 16px;
         }
 
-        input:focus {
-            border-color: var(--magic-purple);
-            box-shadow: 0 0 15px rgba(155, 89, 182, 0.4);
-            transform: scale(1.02);
-            outline: none;
+        input[type="text"]:focus {
+            outline: 2px solid #8d6e63;
         }
 
-        button {
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #2c3e50, #000);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            border-radius: 50px;
-            cursor: pointer;
+        /* Gaya Tombol RPG Solid (seperti tombol 'Home' di mockup) */
+        button.classic-rpg-btn {
+            padding: 12px 35px;
+            background-color: var(--primary-gothic);
+            color: var(--text-on-dark);
+            border: 2px solid #3e2723; /* Border lebih gelap agar tombol menonjol */
+            border-radius: 5px;
+            font-family: var(--font-gothic);
             font-weight: bold;
-            transition: 0.3s;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 20px;
         }
 
-        button:hover {
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.4);
+        button.classic-rpg-btn:hover {
+            background-color: #a1887f;
+            color: var(--text-dark);
         }
 
-        /* Battle UI */
+        /* Battle UI Layer (Lapis transparan di atas BG) */
+        #game-screen-layer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.5); /* Gelap sedikit agar teks terbaca */
+            padding: 50px 20px 20px; /* Padding extra di atas karena ada header placeholder */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            display: none; /* Sembunyi saat awal */
+        }
+
+        /* Penyesuaian HP Bar agar terlihat lebih RPG klasik */
         .battle-view {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.5);
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            border: 1px solid #2c3e50;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px #000;
         }
 
-        .hp-bar { height: 8px; background: #111; border-radius: 10px; margin: 10px 0; border: 1px solid #333; overflow: hidden; }
-        .hp-fill { height: 100%; transition: width 0.8s ease-in-out; }
-
-        .action-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .spell-box { background: #1a1a20; padding: 15px; border-radius: 15px; border: 1px solid #333; position: relative; }
-        .word-target { font-size: 16px; color: var(--primary); margin: 12px 0; font-family: 'Courier New', monospace; text-shadow: 0 0 5px rgba(241, 196, 15, 0.3); }
-
-        .log { font-size: 13px; height: 50px; color: #aaa; font-style: italic; display: flex; align-items: center; justify-content: center; }
-
-        /* Leaderboard Styling */
-        .leaderboard-container {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px dashed #333;
-        }
-        .rank-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin: 5px 0;
-            padding: 4px 15px;
-            background: rgba(255,255,255,0.02);
+        .hp-container { width: 40%; text-align: center; }
+        .hp-bar {
+            height: 10px;
+            background: #424242;
+            border: 2px solid var(--frame-border);
             border-radius: 5px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+        .hp-fill { height: 100%; transition: width 0.6s ease; }
+
+        /* Area Input Mantra */
+        .action-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .spell-box {
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--frame-border);
+            text-align: center;
+        }
+        .word-target {
+            font-family: var(--font-gothic);
+            color: var(--frame-border);
+            margin: 10px 0;
+            font-size: 18px;
         }
 
-        /* Animations */
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .hit { animation: shake 0.4s both; }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-2px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+        .log { color: #bdbdbd; font-style: italic; font-size: 12px; height: 30px; }
+
+        /* Leaderboard Fiktif (Scroll style di mockup) */
+        .leaderboard-overlay {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(129, 98, 70, 0.1);
+            border: 1px dashed var(--frame-border);
+            width: 70%;
+        }
+        .leaderboard-title { font-size: 11px; letter-spacing: 2px; color: var(--frame-border); margin-bottom: 5px; }
+        .leaderboard-item { display: flex; justify-content: space-between; font-size: 12px; margin: 3px 0; }
+
+        /* Game Over Layer */
+        #game-over-layer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            display: none;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
-<canvas class="stars" id="starCanvas"></canvas>
-
-<div id="game-container">
-    <span class="ornament top-left">✙</span>
-    <span class="ornament top-right">✙</span>
-    <span class="ornament bot-left">✙</span>
-    <span class="ornament bot-right">✙</span>
-
-    <div id="login-screen">
-        <h1>SPELLSCRIPT</h1>
-        <div class="subtitle">Ancient Wizardry Academy</div>
-        <input type="text" id="name-input" placeholder="Nama Sang Penyihir..." autocomplete="off">
-        <br>
-        <button onclick="startGame()">MEMULAI RITUAL</button>
-        
-        <div class="leaderboard-container">
-            <div style="font-size: 11px; letter-spacing: 3px; color: var(--magic-purple); margin-bottom: 10px;">DEWAN PENYIHIR TERTINGGI (RANK)</div>
-            <div id="highscore-view"></div>
-        </div>
+<div id="game-frame">
+    <div id="mockup-header-placeholder">
+        <span>ICONS</span>
+        <span>MENU</span>
+        <span>POLAR</span>
     </div>
 
-    <div id="game-screen" style="display: none;">
-        <div class="battle-view" id="battle-area">
-            <div style="width: 40%">
-                <div id="p-name" style="font-size: 12px; font-weight: bold; color: var(--mana);">PLAYER</div>
-                <div class="hp-bar"><div id="p-hp-fill" class="hp-fill" style="background: var(--mana); width: 100%"></div></div>
-                <div id="p-hp-text" style="font-size: 10px; opacity: 0.6;">100/100</div>
-            </div>
-            <div style="font-size: 20px; color: #444;">✧ VS ✧</div>
-            <div style="width: 40%">
-                <div style="font-size: 12px; font-weight: bold; color: var(--danger);">ARCH-WIZARD</div>
-                <div class="hp-bar"><div id="e-hp-fill" class="hp-fill" style="background: var(--danger); width: 100%"></div></div>
-                <div id="e-hp-text" style="font-size: 10px; opacity: 0.6;">100/100</div>
-            </div>
-        </div>
+    <div id="game-viewport">
 
-        <div id="battle-log" class="log">Mantra sedang dipersiapkan...</div>
-
-        <div class="action-zone">
-            <div class="spell-box">
-                <div style="font-size: 9px; color: var(--danger);">MANTRA API</div>
-                <div id="atk-word" class="word-target"></div>
-                <input type="text" id="atk-input" placeholder="Rapal..." autocomplete="off">
-            </div>
-            <div class="spell-box">
-                <div style="font-size: 9px; color: var(--success);">MANTRA CAHAYA</div>
-                <div id="heal-word" class="word-target"></div>
-                <input type="text" id="heal-input" placeholder="Rapal..." autocomplete="off">
+        <div id="game-title-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+            <h1>Spellscript</h1>
+            <p style="opacity: 0.6; font-size: 10px; letter-spacing: 2px;">IDENTITAS MAGUS</p>
+            <input type="text" id="name-input" placeholder="Namamu..." autocomplete="off">
+            <button class="classic-rpg-btn" style="margin-top: 15px;" onclick="startGame()">MASUK ARENA</button>
+            
+            <div class="leaderboard-overlay">
+                <div class="leaderboard-title">DEWAN PENYIHIR TERTINGGI</div>
+                <div id="highscore-view"></div>
             </div>
         </div>
 
-        <div style="margin-top: 25px; font-size: 12px;">MANA POIN: <span id="score-val" style="color: var(--primary);">0</span></div>
-        <button id="btn-menu" style="display:none;" onclick="location.reload()">KEMBALI KE GERBANG</button>
-    </div>
-</div>
+        <div id="game-screen-layer">
+            <div class="battle-view">
+                <div class="hp-container">
+                    <div id="p-name" style="font-size: 10px; font-weight: bold; color: #fff8e1;">PLAYER</div>
+                    <div class="hp-bar"><div id="p-hp-fill" class="hp-fill" style="background: #388e3c; width: 100%"></div></div>
+                </div>
+                <div style="font-size: 16px; color: #757575;">VS</div>
+                <div class="hp-container">
+                    <div style="font-size: 10px; font-weight: bold; color: #ef5350;">ARCH-WIZARD</div>
+                    <div class="hp-bar"><div id="e-hp-fill" class="hp-fill" style="background: #ef5350; width: 100%"></div></div>
+                </div>
+            </div>
 
-<script>
+            <div id="battle-log" class="log">Rapalkan mantra...</div>
+
+            <div class="action-zone">
+                <div class="spell-box">
+                    <div style="font-size: 8px; color: #ef5350;">API</div>
+                    <div id="atk-word" class="word-target">incantatem</div>
+                    <input type="text" id="atk-input" placeholder="Ketik..." autocomplete="off" style="width: 80%;">
+                </div>
+                <div class="spell-box">
+                    <div style="font-size: 8px; color: #66bb6a;">CAHAYA</div>
+                    <div id="heal-word" class="word-target">sanctuarium</div>
+                    <input type="text" id="heal-input" placeholder="Ketik..." autocomplete="off" style="width: 80%;">
+                </div>
+            </div>
+        </div>
+
+        <div id="game-over-layer">
+            <h1 style="color: #ef5350; font-family: var(--font-gothic);">AKHIR RITUAL</h1>
+            <p id="game-over-msg" style="color: #fff8e1; font-style: italic;"></p>
+            <p style="color: var(--primary-gothic);">SKOR: <span id="final-score" style="font-weight: bold;">0</span> MP</p>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="classic-rpg-btn" onclick="initBattle()">COBA LAGI</button>
+                <button class="classic-rpg-btn" onclick="location.reload()">MENU</button>
+            </div>
+        </div>
+
+    </div> </div> <script>
     let player = { name: "", hp: 100, maxHp: 100 };
     let enemy = { hp: 100, maxHp: 100 };
     let score = 0;
     let isActive = false;
     let enemyActionTimer;
 
-    const words = ['incantatem', 'expelliarmus', 'obliviation', 'revelatio', 'immobulus', 'lumosmaxima', 'noxastralis', 'elementalis', 'sanctuarium', 'transmutasi'];
+    const wordsAtk = ['incantatem', 'expelliarmus', 'obliviation', 'revelatio', 'immobulus', 'elementalis'];
+    const wordsHeal = ['sanctuarium', 'equilibrium', 'spirituality', 'evanescence', 'transmutasi', 'lumosmaxima'];
 
-    // Star Background
-    const canvas = document.getElementById('starCanvas');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-    function initStars() {
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        for(let i=0; i<50; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2});
-    }
-    function animateStars() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = "rgba(155, 89, 182, 0.5)";
-        stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.s, 0, Math.PI*2); ctx.fill(); s.y -= 0.3; if(s.y<0) s.y=canvas.height; });
-        requestAnimationFrame(animateStars);
-    }
-
-    // Leaderboard Logic
-    function getScores() {
-        let scores = JSON.parse(localStorage.getItem('spellscript_v2_scores'));
-        if(!scores) {
-            // Fiktif Leaderboard jika kosong
-            scores = [
-                {name: "Albus Dumbledore", score: 1250},
-                {name: "Gandalf the Grey", score: 980},
-                {name: "Morgana Le Fay", score: 750},
-                {name: "Harry P.", score: 500},
-                {name: "Ron Weasley", score: 120}
-            ];
-            localStorage.setItem('spellscript_v2_scores', JSON.stringify(scores));
-        }
-        return scores;
-    }
-
+    // Fiktif Leaderboard
     function loadLeaderboard() {
-        const scores = getScores();
+        const scores = [
+            {name: "Dumbledore", score: 1250},
+            {name: "Gandalf", score: 980},
+            {name: "Morgana Le Fay", score: 750},
+            {name: "Harry P.", score: 500},
+            {name: "Ron W.", score: 120}
+        ];
         let html = "";
-        scores.slice(0, 5).forEach((s, i) => {
-            html += `<div class="rank-item"><span>${i+1}. ${s.name}</span><span style="color:var(--primary)">${s.score} MP</span></div>`;
+        scores.forEach((s, i) => {
+            html += `<div class="leaderboard-item"><span>${i+1}. ${s.name}</span><span style="color:var(--primary-gothic)">${s.score} MP</span></div>`;
         });
         document.getElementById('highscore-view').innerHTML = html;
     }
 
+    // Ganti Fungsi Mulai Game
     function startGame() {
-        const name = document.getElementById('name-input').value;
-        if(!name) return alert("Sebutkan namamu, wahai Magus!");
-        player.name = name;
-        document.getElementById('p-name').innerText = name.toUpperCase();
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('game-screen').style.display = 'block';
+        const nameInput = document.getElementById('name-input');
+        if(!nameInput.value) return alert("Sebutkan namamu, wahai Magus!");
+        
+        player.name = nameInput.value;
+        document.getElementById('p-name').innerText = player.name.toUpperCase();
+        
+        // Sembunyikan Menu, Tampilkan Battle Layer
+        document.getElementById('game-title-screen').style.display = 'none';
+        document.getElementById('game-screen-layer').style.display = 'flex';
+        
         initBattle();
     }
 
     function initBattle() {
+        // Reset State
         player.hp = 100; enemy.hp = 100; score = 0; isActive = true;
-        updateUI(); refreshWords();
+        
+        // UI Reset
+        document.getElementById('game-over-layer').style.display = 'none';
+        document.getElementById('battle-log').innerText = "Bersiaplah di arena...";
+        document.getElementById('atk-input').value = "";
+        document.getElementById('heal-input').value = "";
+        
+        updateUI();
+        refreshWords();
+        
+        // Start Enemy Timer
+        if(enemyActionTimer) clearInterval(enemyActionTimer);
+        enemyActionTimer = setInterval(enemyTurn, 4500); // Sedikit lebih lambat agar adil
+        
         document.getElementById('atk-input').focus();
-        enemyActionTimer = setInterval(enemyTurn, 4000);
     }
 
     function refreshWords() {
-        document.getElementById('atk-word').innerText = words[Math.floor(Math.random()*words.length)];
-        document.getElementById('heal-word').innerText = words[Math.floor(Math.random()*words.length)];
+        document.getElementById('atk-word').innerText = wordsAtk[Math.floor(Math.random()*wordsAtk.length)];
+        document.getElementById('heal-word').innerText = wordsHeal[Math.floor(Math.random()*wordsHeal.length)];
     }
 
+    // Input Attack
     document.getElementById('atk-input').addEventListener('input', function(e) {
         if(!isActive) return;
         if(e.target.value.toLowerCase() === document.getElementById('atk-word').innerText) {
-            enemy.hp -= 20; score += 25;
-            triggerHitEffect('battle-area');
-            logAction("✧ Mantra mengenai musuh! ✧");
+            enemy.hp -= 20; score += 20;
+            updateLog("✧ Mantra api mengenai musuh! ✧");
             finalizeTurn(e.target);
         }
     });
 
+    // Input Heal
     document.getElementById('heal-input').addEventListener('input', function(e) {
         if(!isActive) return;
         if(e.target.value.toLowerCase() === document.getElementById('heal-word').innerText) {
             player.hp = Math.min(player.maxHp, player.hp + 15);
-            logAction("✧ Cahaya suci menyembuhkanmu... ✧");
+            updateLog("✧ Cahaya penyembuh menyelimutimu... ✧");
             finalizeTurn(e.target);
         }
     });
 
-    function finalizeTurn(el) { el.value = ""; refreshWords(); updateUI(); checkDeath(); }
+    function finalizeTurn(el) {
+        el.value = "";
+        refreshWords();
+        updateUI();
+        checkDeath();
+    }
 
     function enemyTurn() {
         if(!isActive) return;
-        player.hp -= 12;
-        triggerHitEffect('game-container');
-        logAction("Musuh merapal sihir kegelapan!");
-        updateUI(); checkDeath();
-    }
-
-    function triggerHitEffect(id) {
-        const el = document.getElementById(id);
-        el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
+        player.hp -= 10;
+        updateLog("Arch-Wizard menyerang dengan sihir kegelapan!");
+        updateUI();
+        checkDeath();
     }
 
     function updateUI() {
@@ -332,31 +368,31 @@
         document.getElementById('e-hp-fill').style.width = enemy.hp + "%";
         document.getElementById('p-hp-text').innerText = `${Math.max(0, player.hp)}/100`;
         document.getElementById('e-hp-text').innerText = `${Math.max(0, enemy.hp)}/100`;
-        document.getElementById('score-val').innerText = score;
+        // Score ditampilkan di Game Over
     }
 
-    function logAction(msg) {
-        const logEl = document.getElementById('battle-log');
-        logEl.innerText = msg;
+    function updateLog(msg) {
+        document.getElementById('battle-log').innerText = msg;
     }
 
     function checkDeath() {
         if(enemy.hp <= 0 || player.hp <= 0) {
-            isActive = false; clearInterval(enemyActionTimer);
-            logAction(enemy.hp <= 0 ? "🏆 Kemenangan Mutlak!" : "💀 Rohmu Terlempar ke Void...");
-            saveScore();
-            document.getElementById('btn-menu').style.display = 'inline-block';
+            isActive = false;
+            clearInterval(enemyActionTimer);
+            
+            // Tampilkan Game Over Layer
+            document.getElementById('game-screen-layer').style.display = 'none';
+            document.getElementById('game-over-layer').style.display = 'flex';
+            
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('game-over-msg').innerText = enemy.hp <= 0 ? 
+                "Kemenangan Mutlak! Musuh tumbang." : "Kekalahan... Rohmu terperangkap di Void.";
         }
     }
 
-    function saveScore() {
-        let scores = getScores();
-        scores.push({name: player.name, score: score});
-        scores.sort((a,b) => b.score - a.score);
-        localStorage.setItem('spellscript_v2_scores', JSON.stringify(scores.slice(0, 5)));
-    }
-
-    initStars(); animateStars(); loadLeaderboard();
+    // Init
+    window.onload = loadLeaderboard;
 </script>
+
 </body>
 </html>
