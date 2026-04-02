@@ -7,22 +7,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=MedievalSharp&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #f1c40f;
-            --magic-purple: #6e00ff;
-            --bg: #05020a;
-            --card-bg: rgba(15, 10, 25, 0.85);
-            --danger: #ff4757;
-            --success: #2ed573;
-            --text: #e0d4be;
+            --primary: #5d4037; /* Coklat Tua */
+            --accent: #d4a373; /* Coklat Muda Keemasan */
+            --parchment: #f4e1d2; /* Warna Kertas Kuno */
+            --bg: #2b1d0e;
+            --danger: #8b0000;
+            --success: #2e7d32;
+            --text: #3e2723;
         }
 
         body {
             background-color: var(--bg);
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(110, 0, 255, 0.1) 0%, transparent 80%),
-                url('URL_GAMBAR_WIZARD_TOWER_KAMU'); /* Ganti dengan aset gambar kamu */
+                linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url('https://www.transparenttextures.com/patterns/papyrus.png');
             background-size: cover;
-            background-position: center;
             color: var(--text);
             font-family: 'MedievalSharp', cursive;
             display: flex;
@@ -33,201 +32,167 @@
             overflow: hidden;
         }
 
-        /* Efek Partikel Sederhana (Pseudo-element) */
-        body::before {
-            content: "";
+        /* Leaderboard Toggle System */
+        #leaderboard-wrapper {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.3;
-            pointer-events: none;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            text-align: right;
+        }
+
+        #leaderboard-content {
+            background: var(--parchment);
+            padding: 15px;
+            border: 3px double var(--primary);
+            border-radius: 5px;
+            width: 200px;
+            display: none; /* Awalnya tertutup */
+            margin-top: 10px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            text-align: left;
+        }
+
+        .toggle-btn {
+            background: var(--primary);
+            color: var(--parchment);
+            border: 1px solid var(--accent);
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            border-radius: 4px;
         }
 
         #game-container {
-            background: var(--card-bg);
+            background: var(--parchment);
             padding: 30px;
-            border: 2px solid #4a306d;
-            border-radius: 15px;
+            border: 10px solid transparent;
+            border-image: url('https://www.transparenttextures.com/patterns/dark-matter.png') 30 round;
+            outline: 2px solid var(--primary);
             width: 550px;
-            box-shadow: 0 0 30px rgba(110, 0, 255, 0.3), inset 0 0 15px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             text-align: center;
-            backdrop-filter: blur(8px);
             position: relative;
-            z-index: 2;
         }
 
         h1 { 
             font-family: 'Cinzel', serif;
             color: var(--primary); 
-            letter-spacing: 6px; 
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
             margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
         }
 
-        /* Leaderboard Fiktif dengan Style Magis */
-        #leaderboard-overlay {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(25, 15, 40, 0.9);
-            padding: 15px;
-            border: 1px solid var(--magic-purple);
-            border-radius: 8px;
-            width: 190px;
-            font-size: 12px;
-            box-shadow: 0 0 15px rgba(110, 0, 255, 0.2);
-        }
-
-        .leader-title {
-            font-family: 'Cinzel', serif;
-            color: var(--primary);
-            border-bottom: 1px solid var(--magic-purple);
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-        }
-
-        /* Input & Select Custom */
         input, select {
             width: 85%;
             padding: 12px;
-            background: #0a0510;
-            border: 1px solid #4a306d;
-            color: #fff;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid var(--primary);
+            color: var(--text);
             font-family: 'MedievalSharp', cursive;
             text-align: center;
-            border-radius: 5px;
             margin-bottom: 15px;
+        }
+
+        button.main-btn {
+            font-family: 'Cinzel', serif;
+            padding: 12px 35px;
+            background: var(--primary);
+            color: var(--parchment);
+            border: none;
+            cursor: pointer;
             transition: 0.3s;
         }
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+        button.main-btn:hover {
+            background: var(--accent);
+            color: var(--primary);
         }
 
-        button {
-            font-family: 'Cinzel', serif;
-            padding: 12px 35px;
-            background: linear-gradient(45deg, #2c003e, #6e00ff);
-            color: white;
-            border: 1px solid var(--primary);
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.4s;
-            text-transform: uppercase;
-        }
-
-        button:hover { 
-            box-shadow: 0 0 20px var(--magic-purple);
-            transform: scale(1.05);
-        }
-
-        /* Battle UI */
         .battle-view { 
             display: flex; 
             justify-content: space-around; 
-            background: rgba(0,0,0,0.5); 
+            background: rgba(0,0,0,0.05); 
             padding: 20px; 
-            border-radius: 10px; 
-            border: 1px solid #333;
+            border: 1px dashed var(--primary);
         }
 
         .hp-bar { 
             height: 12px; 
-            background: #1a1a1a; 
-            border-radius: 6px; 
-            border: 1px solid #444; 
+            background: #d7ccc8; 
+            border: 1px solid var(--primary); 
         }
 
-        .hp-fill { 
-            height: 100%; 
-            transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            box-shadow: 0 0 10px currentColor;
-        }
+        .hp-fill { height: 100%; transition: width 0.5s ease; }
 
         .word-target { 
-            font-size: 18px; 
-            color: var(--primary); 
+            font-size: 20px; 
+            color: var(--danger); 
             margin: 10px 0; 
-            text-shadow: 0 0 8px rgba(241, 196, 15, 0.6);
+            font-weight: bold;
         }
 
         .spell-box { 
-            background: rgba(20, 10, 30, 0.6); 
-            border: 1px solid #4a306d;
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.5); 
+            border: 1px solid var(--primary);
+            padding: 10px;
         }
-
-        /* Animasi Kena Hit */
-        @keyframes magicShake {
-            0% { transform: translate(0,0); }
-            25% { transform: translate(3px, 3px) rotate(1deg); }
-            50% { transform: translate(-3px, -3px) rotate(-1deg); }
-            100% { transform: translate(0,0); }
-        }
-        .hit { animation: magicShake 0.3s ease-in-out; }
     </style>
 </head>
 <body>
 
-<div id="leaderboard-overlay">
-    <div class="leader-title">TOP SORCERERS</div>
-    <div id="leader-list"></div>
+<div id="leaderboard-wrapper">
+    <button class="toggle-btn" onclick="toggleLeaderboard()">📜 SKOR TERBAIK</button>
+    <div id="leaderboard-content">
+        <div style="font-family: 'Cinzel'; font-weight: bold; border-bottom: 1px solid var(--primary); margin-bottom: 8px;">TOP SORCERERS</div>
+        <div id="leader-list"></div>
+    </div>
 </div>
 
 <div id="game-container">
     <div id="login-screen">
         <h1>SPELLSCRIPT</h1>
-        <div class="menu-group">
-            <label style="display:block; margin-bottom:10px; font-size:12px;">DAFTARKAN DIRIMU, PENYIHIR</label>
-            <input type="text" id="name-input" placeholder="Nama Ksatria Sihir..." autocomplete="off">
-        </div>
-        
-        <div class="menu-group">
-            <select id="level-select">
-                <option value="easy">LEVEL 1-2: BASIC ARCANE</option>
-                <option value="hard">LEVEL 3: ANCIENT RUNES</option>
-            </select>
-        </div>
-
-        <button onclick="startGame()">MASUK ARENA</button>
+        <p style="font-size: 12px; font-style: italic;">"Tuliskan takdirmu pada gulungan ini."</p>
+        <input type="text" id="name-input" placeholder="Nama Sang Ksatria..." autocomplete="off">
+        <select id="level-select">
+            <option value="easy">TINGKAT I: DASAR ELEMEN</option>
+            <option value="hard">TINGKAT II: RITUAL KUNO</option>
+        </select>
+        <br>
+        <button class="main-btn" onclick="startGame()">MULAI RITUAL</button>
     </div>
 
     <div id="game-screen" style="display: none;">
-        <div class="battle-view" id="battle-area">
+        <div class="battle-view">
             <div>
-                <div id="p-name" style="font-size: 12px; margin-bottom: 5px;">PLAYER</div>
-                <div class="hp-bar" style="width: 160px;"><div id="p-hp-fill" class="hp-fill" style="background: var(--success); width: 100%; color: var(--success);"></div></div>
+                <div id="p-name" style="font-size: 12px; font-weight: bold;">PLAYER</div>
+                <div class="hp-bar" style="width: 160px;"><div id="p-hp-fill" class="hp-fill" style="background: var(--success); width: 100%;"></div></div>
             </div>
-            <div style="align-self: center; font-family: 'Cinzel'; color: var(--magic-purple);">VS</div>
+            <div style="align-self: center; font-family: 'Cinzel';">VS</div>
             <div>
-                <div style="font-size: 12px; margin-bottom: 5px; color: var(--danger);">ARCH-WIZARD</div>
-                <div class="hp-bar" style="width: 160px;"><div id="e-hp-fill" class="hp-fill" style="background: var(--danger); width: 100%; color: var(--danger);"></div></div>
+                <div style="font-size: 12px; font-weight: bold; color: var(--danger);">ARCH-WIZARD</div>
+                <div class="hp-bar" style="width: 160px;"><div id="e-hp-fill" class="hp-fill" style="background: var(--danger); width: 100%;"></div></div>
             </div>
         </div>
 
-        <div id="battle-log" style="height: 40px; margin: 15px 0; font-size: 13px; color: #aaa; font-style: italic;">Memanggil energi astral...</div>
+        <div id="battle-log" style="height: 35px; font-size: 12px; margin: 10px 0; font-style: italic;">Siapkan tinta dan kekuatanmu...</div>
 
-        <div class="action-zone" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div class="spell-box">
-                <div style="font-size: 10px; opacity: 0.6;">OFFENSIVE SPELL</div>
+                <div style="font-size: 10px; text-transform: uppercase;">Mantra Serang</div>
                 <div id="atk-word" class="word-target"></div>
-                <input type="text" id="atk-input" placeholder="Rapalkan..." autocomplete="off" style="width: 90%; font-size: 14px;">
+                <input type="text" id="atk-input" placeholder="..." style="width: 80%;">
             </div>
             <div class="spell-box">
-                <div style="font-size: 10px; opacity: 0.6;">RECOVERY RITE</div>
+                <div style="font-size: 10px; text-transform: uppercase;">Mantra Pulih</div>
                 <div id="heal-word" class="word-target"></div>
-                <input type="text" id="heal-input" placeholder="Pulihkan..." autocomplete="off" style="width: 90%; font-size: 14px;">
+                <input type="text" id="heal-input" placeholder="..." style="width: 80%;">
             </div>
         </div>
-        
-        <div style="margin-top: 25px; font-family: 'Cinzel';">
-            MANA COLLECTED: <span id="score-val" style="color: var(--primary);">0</span>
-        </div>
+        <div style="margin-top: 20px;">MANA: <span id="score-val">0</span></div>
     </div>
 </div>
 
@@ -245,14 +210,19 @@
     let player = { hp: 100 }, enemy = { hp: 100 };
 
     window.onload = () => {
-        const list = document.getElementById('leader-list');
-        list.innerHTML = dummyLeaders.map((l, i) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${i+1}. ${l.name}</span><span style="color:var(--primary)">${l.score}</span></div>`).join('');
+        document.getElementById('leader-list').innerHTML = dummyLeaders.map((l, i) => 
+            `<div style="display:flex; justify-content:space-between; font-size:12px;"><span>${i+1}. ${l.name}</span><span>${l.score}</span></div>`
+        ).join('');
     };
+
+    function toggleLeaderboard() {
+        const content = document.getElementById('leaderboard-content');
+        content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    }
 
     function startGame() {
         const name = document.getElementById('name-input').value;
-        if(!name) return alert("Sebutkan namamu, wahai Penyihir!");
-        player.name = name;
+        if(!name) return alert("Siapa namamu, Penyair?");
         currentGameWords = wordBank[document.getElementById('level-select').value];
         document.getElementById('p-name').innerText = name.toUpperCase();
         document.getElementById('login-screen').style.display = 'none';
@@ -264,7 +234,7 @@
         isActive = true;
         refreshWords();
         document.getElementById('atk-input').focus();
-        setInterval(() => { if(isActive) { player.hp -= 7; updateUI(); checkDeath(); } }, 4000);
+        setInterval(() => { if(isActive) { player.hp -= 8; updateUI(); checkDeath(); } }, 4500);
     }
 
     function refreshWords() {
@@ -275,7 +245,6 @@
     document.getElementById('atk-input').addEventListener('input', (e) => {
         if(e.target.value.toLowerCase() === document.getElementById('atk-word').innerText.toLowerCase()) {
             enemy.hp -= 20; score += 15;
-            triggerEffect('battle-area');
             e.target.value = ""; refreshWords(); updateUI(); checkDeath();
         }
     });
@@ -287,12 +256,6 @@
         }
     });
 
-    function triggerEffect(id) {
-        const el = document.getElementById(id);
-        el.classList.add('hit');
-        setTimeout(() => el.classList.remove('hit'), 300);
-    }
-
     function updateUI() {
         document.getElementById('p-hp-fill').style.width = player.hp + "%";
         document.getElementById('e-hp-fill').style.width = enemy.hp + "%";
@@ -302,7 +265,7 @@
     function checkDeath() {
         if(enemy.hp <= 0 || player.hp <= 0) {
             isActive = false;
-            alert(enemy.hp <= 0 ? "Musuh Terkalahkan! Mana terkumpul: " + score : "Energi Sihirmu Habis...");
+            alert(enemy.hp <= 0 ? "Kemenangan Menantimu!" : "Gulunganmu Terbakar...");
             location.reload();
         }
     }
