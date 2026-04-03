@@ -70,7 +70,6 @@
         }
 
         .battle-view { display: flex; justify-content: space-around; margin-bottom: 25px; position: relative; }
-        .hp-container { position: relative; }
         .hp-bar { height: 12px; background: rgba(0,0,0,0.2); width: 180px; border: 1px solid var(--primary); overflow: hidden; }
         .hp-fill { height: 100%; transition: width 0.3s ease-out; }
         
@@ -81,6 +80,8 @@
 
         .word-target { font-size: 20px; color: var(--danger); margin: 10px 0; font-weight: bold; min-height: 28px; }
         .spell-box { background: rgba(0,0,0,0.05); padding: 15px; border: 1px dashed var(--primary); transition: 0.2s; }
+
+        #score-display { font-family: 'Cinzel', serif; font-size: 14px; margin-top: 15px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px; }
 
         /* KEYFRAMES ANIMASI */
         @keyframes shake {
@@ -135,12 +136,14 @@
     <div id="win-screen" class="overlay-screen">
         <div class="victory-text">RITUAL SELESAI</div>
         <p style="font-style: italic;">"Boss musuh telah tunduk pada mantramu."</p>
+        <p>TOTAL SKOR: <span class="final-score">0</span></p>
         <button class="main-btn" onclick="location.reload()">MAIN LAGI</button>
     </div>
 
     <div id="lose-screen" class="overlay-screen">
         <div class="defeat-text">RITUAL GAGAL</div>
         <p style="font-style: italic;">"Energi sihirmu telah habis terkuras..."</p>
+        <p>SKOR AKHIR: <span class="final-score">0</span></p>
         <button class="main-btn" onclick="location.reload()">COBA LAGI</button>
     </div>
 
@@ -183,6 +186,8 @@
                 <input type="text" id="heal-input" placeholder="..." style="width: 85%;">
             </div>
         </div>
+
+        <div id="score-display">SKOR RITUAL: <span id="current-score">0</span></div>
     </div>
 </div>
 
@@ -197,6 +202,7 @@
     let currentGameWords = [], isActive = false;
     let player = { hp: 100, maxHp: 100 };
     let enemy = { hp: 500, maxHp: 500 }; 
+    let userScore = 0;
     let atkWordSpawnTime = 0;
     const critTimeLimit = 3000;
     let gameTimer;
@@ -264,14 +270,19 @@
         if(isActive && e.target.value.toLowerCase() === document.getElementById('atk-word').innerText.toLowerCase()) {
             const timeTaken = Date.now() - atkWordSpawnTime;
             let damage = 25;
+            let scoreAdd = 10;
+            
             if (timeTaken <= critTimeLimit) {
                 damage = 50;
+                scoreAdd = 50; // Bonus skor critical
                 triggerEffect('box-atk', 'crit-effect');
                 showCritMessage();
                 triggerEffect('game-container', 'screen-shake');
             } else {
                 triggerEffect('box-atk', 'atk-effect');
             }
+            
+            userScore += scoreAdd;
             enemy.hp = Math.max(0, enemy.hp - damage);
             e.target.value = ""; refreshWords(); updateUI(); checkGameOver();
         }
@@ -280,6 +291,7 @@
     document.getElementById('heal-input').addEventListener('input', (e) => {
         if(isActive && e.target.value.toLowerCase() === document.getElementById('heal-word').innerText.toLowerCase()) {
             player.hp = Math.min(100, player.hp + 15);
+            userScore += 5; // Skor kecil untuk heal
             triggerEffect('box-heal', 'heal-effect');
             e.target.value = ""; refreshWords(); updateUI();
         }
@@ -290,6 +302,7 @@
         document.getElementById('e-hp-fill').style.width = (enemy.hp / enemy.maxHp * 100) + "%";
         document.getElementById('p-hp-val').innerText = player.hp < 0 ? 0 : player.hp;
         document.getElementById('e-hp-val').innerText = enemy.hp < 0 ? 0 : enemy.hp;
+        document.getElementById('current-score').innerText = userScore;
     }
 
     function checkGameOver() {
@@ -303,6 +316,7 @@
     function finishGame(screenId) {
         isActive = false;
         clearInterval(gameTimer);
+        document.querySelectorAll('.final-score').forEach(el => el.innerText = userScore);
         document.getElementById(screenId).classList.add('active');
     }
 </script>
