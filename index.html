@@ -9,11 +9,12 @@
         :root {
             --primary: #3e2723; 
             --accent: #5d4037; 
-            --parchment: #a19373; /* Warna lebih gelap dan kusam */
+            --parchment: #a19373; 
             --bg: #120a07;
             --danger: #4e0000;
             --success: #1b5e20;
             --gold: #b8860b;
+            --crit: #ffeb3b;
         }
 
         body {
@@ -29,135 +30,93 @@
             overflow: hidden;
         }
 
-        /* Efek Debu Melayang */
         .dust {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+            position: absolute; width: 100%; height: 100%;
             background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.1;
-            pointer-events: none;
-            animation: drift 30s linear infinite;
+            opacity: 0.1; pointer-events: none; animation: drift 30s linear infinite;
+            z-index: 1;
         }
 
-        @keyframes drift {
-            from { background-position: 0 0; }
-            to { background-position: 1000px 1000px; }
-        }
+        @keyframes drift { from { background-position: 0 0; } to { background-position: 1000px 1000px; } }
 
-        #leaderboard-wrapper {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-        }
-
+        #leaderboard-wrapper { position: absolute; top: 20px; right: 20px; z-index: 100; }
         #leaderboard-content {
-            background: var(--parchment);
-            padding: 15px;
-            border: 2px solid var(--primary);
-            width: 180px;
-            display: none;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            filter: brightness(0.8);
+            background: var(--parchment); padding: 15px; border: 2px solid var(--primary);
+            width: 180px; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.5); filter: brightness(0.8);
         }
 
         .toggle-btn {
-            background: var(--primary);
-            color: var(--parchment);
-            border: 1px solid var(--gold);
-            padding: 6px 12px;
-            cursor: pointer;
-            font-family: 'Cinzel', serif;
-            font-size: 10px;
+            background: var(--primary); color: var(--parchment); border: 1px solid var(--gold);
+            padding: 6px 12px; cursor: pointer; font-family: 'Cinzel', serif; font-size: 10px;
         }
 
         #game-container {
-            background: var(--parchment);
-            padding: 40px;
-            border: 2px solid var(--primary);
-            width: 500px;
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.3), 0 30px 60px rgba(0,0,0,0.8);
-            text-align: center;
-            position: relative;
+            background: var(--parchment); padding: 40px; border: 2px solid var(--primary);
+            width: 500px; box-shadow: inset 0 0 60px rgba(0,0,0,0.3), 0 30px 60px rgba(0,0,0,0.8);
+            text-align: center; position: relative; z-index: 2;
         }
 
-        h1 { 
-            font-family: 'Cinzel', serif;
-            letter-spacing: 5px;
-            margin: 0 0 30px 0;
-            border-bottom: 1px solid var(--primary);
-        }
+        h1 { font-family: 'Cinzel', serif; letter-spacing: 5px; margin: 0 0 30px 0; border-bottom: 1px solid var(--primary); }
 
         input, select {
-            width: 80%;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.15);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            font-family: 'MedievalSharp', cursive;
-            text-align: center;
-            margin-bottom: 15px;
+            width: 80%; padding: 12px; background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--primary); color: var(--primary);
+            font-family: 'MedievalSharp', cursive; text-align: center; margin-bottom: 15px;
         }
 
         button.main-btn {
-            font-family: 'Cinzel', serif;
-            padding: 10px 35px;
-            background: var(--primary);
-            color: var(--parchment);
-            border: none;
-            cursor: pointer;
+            font-family: 'Cinzel', serif; padding: 10px 35px; background: var(--primary);
+            color: var(--parchment); border: none; cursor: pointer; margin-top: 10px;
         }
 
-        /* Battle UI */
-        .battle-view { 
-            display: flex; 
-            justify-content: space-around; 
-            margin-bottom: 25px;
+        .battle-view { display: flex; justify-content: space-around; margin-bottom: 25px; position: relative; }
+        .hp-container { position: relative; }
+        .hp-bar { height: 12px; background: rgba(0,0,0,0.2); width: 180px; border: 1px solid var(--primary); overflow: hidden; }
+        .hp-fill { height: 100%; transition: width 0.3s ease-out; }
+        
+        #p-hp-fill { background: var(--success); box-shadow: 0 0 10px rgba(27, 94, 32, 0.7); }
+        #e-hp-fill { background: var(--danger); box-shadow: 0 0 10px rgba(78, 0, 0, 0.7); }
+
+        .hp-text { font-size: 9px; margin-top: 4px; font-weight: bold; }
+
+        .word-target { font-size: 20px; color: var(--danger); margin: 10px 0; font-weight: bold; min-height: 28px; }
+        .spell-box { background: rgba(0,0,0,0.05); padding: 15px; border: 1px dashed var(--primary); transition: 0.2s; }
+
+        /* KEYFRAMES ANIMASI */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-3px, -2px); }
+            100% { transform: translate(0px, 0px); }
         }
+        .screen-shake { animation: shake 0.2s ease-in-out; }
+        .heal-effect { animation: healFlash 0.5s; }
+        .atk-effect { animation: atkFlash 0.5s; }
+        .crit-effect { animation: critFlash 0.5s; }
+        @keyframes healFlash { 0% { background: rgba(27, 94, 32, 0.4); } 100% { background: rgba(0,0,0,0.05); } }
+        @keyframes atkFlash { 0% { background: rgba(78, 0, 0, 0.4); } 100% { background: rgba(0,0,0,0.05); } }
+        @keyframes critFlash { 0% { background: rgba(255, 235, 59, 0.5); } 100% { background: rgba(0,0,0,0.05); } }
 
-        .hp-bar { height: 8px; background: rgba(0,0,0,0.2); width: 150px; border: 1px solid var(--primary); }
-        .hp-fill { height: 100%; transition: width 0.5s ease; }
-
-        .word-target { 
-            font-size: 20px; 
-            color: var(--danger); 
-            margin: 10px 0; 
-            font-weight: bold;
-            min-height: 28px;
+        /* OVERLAY MENANG & KALAH */
+        .overlay-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--parchment); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 100;
+            opacity: 0; pointer-events: none; transition: opacity 0.8s ease;
         }
+        .overlay-screen.active { opacity: 1; pointer-events: auto; }
 
-        .spell-box { 
-            background: rgba(0,0,0,0.05); 
-            padding: 15px;
-            border: 1px dashed var(--primary);
+        .victory-text { font-family: 'Cinzel', serif; font-size: 32px; color: var(--gold); text-shadow: 2px 2px 0px var(--primary); margin-bottom: 10px; }
+        .defeat-text { font-family: 'Cinzel', serif; font-size: 32px; color: var(--danger); text-shadow: 2px 2px 0px #000; margin-bottom: 10px; }
+
+        .crit-text {
+            position: absolute; font-family: 'Cinzel', serif; font-size: 14px;
+            color: var(--crit); font-weight: bold; text-shadow: 0 0 5px rgba(255, 235, 59, 0.8), 1px 1px 0 #000;
+            pointer-events: none; z-index: 10; opacity: 0; animation: critFloat 1s ease-out forwards;
         }
-
-        /* Animasi Menang (Fade In & Glow) */
-        #win-screen {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--parchment);
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 50;
-            animation: victoryGlow 2s forwards;
-        }
-
-        @keyframes victoryGlow {
-            0% { opacity: 0; background: #fff; }
-            50% { background: var(--gold); }
-            100% { opacity: 1; background: var(--parchment); }
-        }
-
-        .victory-text {
-            font-family: 'Cinzel', serif;
-            font-size: 32px;
-            color: var(--gold);
-            text-shadow: 2px 2px 0px var(--primary);
-            margin-bottom: 20px;
+        @keyframes critFloat {
+            0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
+            20% { opacity: 1; transform: translate(-50%, -20px) scale(1.3); }
+            100% { opacity: 0; transform: translate(-50%, -40px) scale(1); }
         }
     </style>
 </head>
@@ -173,10 +132,16 @@
 </div>
 
 <div id="game-container">
-    <div id="win-screen">
+    <div id="win-screen" class="overlay-screen">
         <div class="victory-text">RITUAL SELESAI</div>
-        <p style="font-style: italic;">"Musuh telah tunduk pada mantramu."</p>
-        <button class="main-btn" onclick="location.reload()">KEMBALI</button>
+        <p style="font-style: italic;">"Boss musuh telah tunduk pada mantramu."</p>
+        <button class="main-btn" onclick="location.reload()">MAIN LAGI</button>
+    </div>
+
+    <div id="lose-screen" class="overlay-screen">
+        <div class="defeat-text">RITUAL GAGAL</div>
+        <p style="font-style: italic;">"Energi sihirmu telah habis terkuras..."</p>
+        <button class="main-btn" onclick="location.reload()">COBA LAGI</button>
     </div>
 
     <div id="login-screen">
@@ -192,24 +157,27 @@
 
     <div id="game-screen" style="display: none;">
         <div class="battle-view">
-            <div>
+            <div id="player-ui">
                 <div id="p-name" style="font-size: 11px;">PLAYER</div>
-                <div class="hp-bar"><div id="p-hp-fill" class="hp-fill" style="background: var(--success); width: 100%;"></div></div>
+                <div class="hp-bar"><div id="p-hp-fill" class="hp-fill"></div></div>
+                <div class="hp-text"><span id="p-hp-val">100</span> / 100 HP</div>
             </div>
             <div style="align-self: center; font-family: 'Cinzel';">VS</div>
-            <div>
-                <div style="font-size: 11px; color: var(--danger);">ARCH-WIZARD</div>
-                <div class="hp-bar"><div id="e-hp-fill" class="hp-fill" style="background: var(--danger); width: 100%;"></div></div>
+            <div id="enemy-ui" class="hp-container">
+                <div id="crit-msg-container"></div>
+                <div style="font-size: 11px; color: var(--danger);">ARCH-WIZARD (BOSS)</div>
+                <div class="hp-bar"><div id="e-hp-fill" class="hp-fill"></div></div>
+                <div class="hp-text"><span id="e-hp-val">500</span> / 500 HP</div>
             </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div class="spell-box">
+            <div class="spell-box" id="box-atk">
                 <div style="font-size: 10px; opacity: 0.6;">SERANGAN</div>
                 <div id="atk-word" class="word-target"></div>
                 <input type="text" id="atk-input" placeholder="..." style="width: 85%;">
             </div>
-            <div class="spell-box">
+            <div class="spell-box" id="box-heal">
                 <div style="font-size: 10px; opacity: 0.6;">PEMULIHAN</div>
                 <div id="heal-word" class="word-target"></div>
                 <input type="text" id="heal-input" placeholder="..." style="width: 85%;">
@@ -227,12 +195,17 @@
     const dummyLeaders = [{ name: "Salma", score: 850 }, { name: "Tasya", score: 720 }, { name: "Kaye", score: 640 }, { name: "Arkan", score: 510 }, { name: "Zack", score: 430 }];
 
     let currentGameWords = [], isActive = false;
-    let player = { hp: 100 }, enemy = { hp: 100 };
+    let player = { hp: 100, maxHp: 100 };
+    let enemy = { hp: 500, maxHp: 500 }; 
+    let atkWordSpawnTime = 0;
+    const critTimeLimit = 3000;
+    let gameTimer;
 
     window.onload = () => {
         document.getElementById('leader-list').innerHTML = dummyLeaders.map((l, i) => 
             `<div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px;"><span>${i+1}. ${l.name}</span><span>${l.score}</span></div>`
         ).join('');
+        updateUI();
     };
 
     function toggleLeaderboard() {
@@ -253,41 +226,84 @@
         isActive = true;
         refreshWords();
         document.getElementById('atk-input').focus();
-        setInterval(() => { if(isActive) { player.hp -= 12; updateUI(); checkGameOver(); } }, 4000);
+        gameTimer = setInterval(() => { 
+            if(isActive) { 
+                player.hp -= 10; 
+                triggerEffect('game-container', 'screen-shake');
+                updateUI(); 
+                checkGameOver(); 
+            } 
+        }, 4500);
+    }
+
+    function triggerEffect(elementId, className) {
+        const el = document.getElementById(elementId);
+        el.classList.remove(className);
+        void el.offsetWidth;
+        el.classList.add(className);
+    }
+
+    function showCritMessage() {
+        const container = document.getElementById('crit-msg-container');
+        const critText = document.createElement('div');
+        critText.className = 'crit-text';
+        critText.style.left = '50%';
+        critText.style.top = '10px';
+        critText.innerText = 'CRITICAL HIT!';
+        container.appendChild(critText);
+        setTimeout(() => critText.remove(), 1000);
     }
 
     function refreshWords() {
         document.getElementById('atk-word').innerText = currentGameWords[Math.floor(Math.random() * currentGameWords.length)];
         document.getElementById('heal-word').innerText = currentGameWords[Math.floor(Math.random() * currentGameWords.length)];
+        atkWordSpawnTime = Date.now();
     }
 
     document.getElementById('atk-input').addEventListener('input', (e) => {
-        if(e.target.value.toLowerCase() === document.getElementById('atk-word').innerText.toLowerCase()) {
-            enemy.hp -= 25;
+        if(isActive && e.target.value.toLowerCase() === document.getElementById('atk-word').innerText.toLowerCase()) {
+            const timeTaken = Date.now() - atkWordSpawnTime;
+            let damage = 25;
+            if (timeTaken <= critTimeLimit) {
+                damage = 50;
+                triggerEffect('box-atk', 'crit-effect');
+                showCritMessage();
+                triggerEffect('game-container', 'screen-shake');
+            } else {
+                triggerEffect('box-atk', 'atk-effect');
+            }
+            enemy.hp = Math.max(0, enemy.hp - damage);
             e.target.value = ""; refreshWords(); updateUI(); checkGameOver();
         }
     });
 
     document.getElementById('heal-input').addEventListener('input', (e) => {
-        if(e.target.value.toLowerCase() === document.getElementById('heal-word').innerText.toLowerCase()) {
+        if(isActive && e.target.value.toLowerCase() === document.getElementById('heal-word').innerText.toLowerCase()) {
             player.hp = Math.min(100, player.hp + 15);
+            triggerEffect('box-heal', 'heal-effect');
             e.target.value = ""; refreshWords(); updateUI();
         }
     });
 
     function updateUI() {
-        document.getElementById('p-hp-fill').style.width = player.hp + "%";
-        document.getElementById('e-hp-fill').style.width = enemy.hp + "%";
+        document.getElementById('p-hp-fill').style.width = (player.hp / player.maxHp * 100) + "%";
+        document.getElementById('e-hp-fill').style.width = (enemy.hp / enemy.maxHp * 100) + "%";
+        document.getElementById('p-hp-val').innerText = player.hp < 0 ? 0 : player.hp;
+        document.getElementById('e-hp-val').innerText = enemy.hp < 0 ? 0 : enemy.hp;
     }
 
     function checkGameOver() {
         if(enemy.hp <= 0) {
-            isActive = false;
-            document.getElementById('win-screen').style.display = 'flex';
+            finishGame('win-screen');
         } else if(player.hp <= 0) {
-            isActive = false;
-            location.reload(); // Kalah langsung reset
+            finishGame('lose-screen');
         }
+    }
+
+    function finishGame(screenId) {
+        isActive = false;
+        clearInterval(gameTimer);
+        document.getElementById(screenId).classList.add('active');
     }
 </script>
 </body>
